@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-interface CampoPasswordProps extends Omit<ComponentProps<typeof Input>, "type" | "id" | "name"> {
+interface CampoPasswordProps extends Omit<
+  ComponentProps<typeof Input>,
+  "type" | "id" | "name"
+> {
   id: string;
   name: string;
   label: string;
@@ -16,7 +19,14 @@ interface CampoPasswordProps extends Omit<ComponentProps<typeof Input>, "type" |
 }
 
 /** Campo password con label e pulsante mostra/nascondi. */
-export function CampoPassword({ id, name, label, azione, className, ...props }: CampoPasswordProps) {
+export function CampoPassword({
+  id,
+  name,
+  label,
+  azione,
+  className,
+  ...props
+}: CampoPasswordProps) {
   const [visibile, setVisibile] = useState(false);
 
   return (
@@ -43,7 +53,11 @@ export function CampoPassword({ id, name, label, azione, className, ...props }: 
           aria-label={visibile ? "Nascondi password" : "Mostra password"}
           tabIndex={-1}
         >
-          {visibile ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
+          {visibile ? (
+            <EyeOffIcon className="size-4" />
+          ) : (
+            <EyeIcon className="size-4" />
+          )}
         </button>
       </div>
     </div>
