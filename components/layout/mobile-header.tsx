@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { NuovaMisurazioneButton } from "@/components/misurazioni/nuova-misurazione-button";
 
-import { LanguageSelect } from "./language-select";
 import { LogoutButton } from "./logout-button";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -26,7 +25,6 @@ export function MobileHeader() {
 
       <div className="flex items-center gap-1">
         <NuovaMisurazioneButton size="sm" testo={t("nav.nuova")} />
-        <LanguageSelect />
         <ThemeToggle />
         <LogoutButton size="icon" soloIcona />
       </div>

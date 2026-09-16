@@ -5,7 +5,6 @@ import Link from "next/link";
 import { NuovaMisurazioneButton } from "@/components/misurazioni/nuova-misurazione-button";
 import { Separator } from "@/components/ui/separator";
 
-import { LanguageSelect } from "./language-select";
 import { LogoutButton } from "./logout-button";
 import { SidebarNav } from "./nav-links";
 import { ThemeToggle } from "./theme-toggle";
@@ -43,12 +42,9 @@ export function Sidebar({ email }: SidebarProps) {
         <p className="truncate px-1 text-xs text-muted-foreground" title={email ?? undefined}>
           {email ?? t("utente")}
         </p>
-        <div className="flex items-center justify-between gap-1">
-          <LanguageSelect esteso />
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <LogoutButton size="icon" soloIcona />
-          </div>
+        <div className="flex items-center justify-end gap-1">
+          <ThemeToggle />
+          <LogoutButton size="icon" soloIcona />
         </div>
       </div>
     </aside>
