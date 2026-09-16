@@ -10,7 +10,11 @@ export function parseNumero(value: string): number {
   return Number(value.trim().replace(",", "."));
 }
 
-function validaNumero(campo: CampoMetrica, value: string, ctx: z.RefinementCtx) {
+function validaNumero(
+  campo: CampoMetrica,
+  value: string,
+  ctx: z.RefinementCtx,
+) {
   const n = parseNumero(value);
   if (Number.isNaN(n)) {
     ctx.addIssue({ code: "custom", message: "Inserisci un numero valido" });
@@ -39,7 +43,9 @@ function campoOpzionale(campo: CampoMetrica) {
       if (value === "") return;
       validaNumero(campo, value, ctx);
     })
-    .transform((value) => (value === "" ? null : arrotonda(parseNumero(value))));
+    .transform((value) =>
+      value === "" ? null : arrotonda(parseNumero(value)),
+    );
 }
 
 /** Campo numerico obbligatorio (solo il peso). */
@@ -49,7 +55,10 @@ function campoObbligatorio(campo: CampoMetrica) {
     .trim()
     .superRefine((value, ctx) => {
       if (value === "") {
-        ctx.addIssue({ code: "custom", message: `${campo.label} è obbligatorio` });
+        ctx.addIssue({
+          code: "custom",
+          message: `${campo.label} è obbligatorio`,
+        });
         return;
       }
       validaNumero(campo, value, ctx);
@@ -67,9 +76,11 @@ export const misurazioneSchema = z.object({
     .refine((v) => v <= oggiISO(), "La data non può essere nel futuro"),
 
   peso_kg: campoObbligatorio(getCampo("peso_kg")),
-  massa_grassa_kg: campoOpzionale(getCampo("massa_grassa_kg")),
-  massa_magra_kg: campoOpzionale(getCampo("massa_magra_kg")),
-  grasso_corporeo_percentuale: campoOpzionale(getCampo("grasso_corporeo_percentuale")),
+  massa_grassa_kg: campoObbligatorio(getCampo("massa_grassa_kg")),
+  massa_magra_kg: campoObbligatorio(getCampo("massa_magra_kg")),
+  grasso_corporeo_percentuale: campoOpzionale(
+    getCampo("grasso_corporeo_percentuale"),
+  ),
   collo_cm: campoOpzionale(getCampo("collo_cm")),
   torace_superiore_cm: campoOpzionale(getCampo("torace_superiore_cm")),
   petto_cm: campoOpzionale(getCampo("petto_cm")),
@@ -80,10 +91,18 @@ export const misurazioneSchema = z.object({
 
   fianchi_cm: campoOpzionale(getCampo("fianchi_cm")),
   vita_fianchi_cm: campoOpzionale(getCampo("vita_fianchi_cm")),
-  coscia_superiore_sinistra_cm: campoOpzionale(getCampo("coscia_superiore_sinistra_cm")),
-  coscia_superiore_destra_cm: campoOpzionale(getCampo("coscia_superiore_destra_cm")),
-  coscia_inferiore_sinistra_cm: campoOpzionale(getCampo("coscia_inferiore_sinistra_cm")),
-  coscia_inferiore_destra_cm: campoOpzionale(getCampo("coscia_inferiore_destra_cm")),
+  coscia_superiore_sinistra_cm: campoOpzionale(
+    getCampo("coscia_superiore_sinistra_cm"),
+  ),
+  coscia_superiore_destra_cm: campoOpzionale(
+    getCampo("coscia_superiore_destra_cm"),
+  ),
+  coscia_inferiore_sinistra_cm: campoOpzionale(
+    getCampo("coscia_inferiore_sinistra_cm"),
+  ),
+  coscia_inferiore_destra_cm: campoOpzionale(
+    getCampo("coscia_inferiore_destra_cm"),
+  ),
   polpaccio_sinistro_cm: campoOpzionale(getCampo("polpaccio_sinistro_cm")),
   polpaccio_destro_cm: campoOpzionale(getCampo("polpaccio_destro_cm")),
 
@@ -111,7 +130,10 @@ export function formInputVuoto(): MisurazioneFormInput {
 export function misurazioneToFormInput(m: Misurazione): MisurazioneFormInput {
   const base = Object.fromEntries(
     // Separatore decimale italiano, coerente con placeholder e valori mostrati
-    CAMPI.map((c) => [c.key, m[c.key] === null ? "" : String(m[c.key]).replace(".", ",")]),
+    CAMPI.map((c) => [
+      c.key,
+      m[c.key] === null ? "" : String(m[c.key]).replace(".", ","),
+    ]),
   ) as Record<CampoMetrica["key"], string>;
   return { ...base, data_misurazione: m.data_misurazione, note: m.note ?? "" };
 }

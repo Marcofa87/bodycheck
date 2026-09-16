@@ -1,7 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, Loader2Icon, SaveIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Loader2Icon,
+  SaveIcon,
+} from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 import { toast } from "sonner";
@@ -13,7 +19,12 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { salvaMisurazione } from "@/lib/actions/misurazioni";
-import { CAMPI_PER_SEZIONE, SEZIONI, type CampoMetrica, type SezioneId } from "@/lib/misurazioni/fields";
+import {
+  CAMPI_PER_SEZIONE,
+  SEZIONI,
+  type CampoMetrica,
+  type SezioneId,
+} from "@/lib/misurazioni/fields";
 import {
   formInputVuoto,
   misurazioneSchema,
@@ -33,13 +44,29 @@ interface MisurazioneFormProps {
 
 const ORDINE_SEZIONI = SEZIONI.map((s) => s.id);
 
-export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps) {
+const CAMPI_OBBLIGATORI = [
+  "peso_kg",
+  "massa_grassa_kg",
+  "massa_magra_kg",
+  "data_misurazione",
+  "petto_cm",
+  "braccio_sinistro_cm",
+  "braccio_destro_cm",
+  "fianchi_cm",
+];
+
+export function MisurazioneForm({
+  misurazione,
+  onSuccess,
+}: MisurazioneFormProps) {
   const [sezione, setSezione] = useState<SezioneId>("chiave");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<MisurazioneFormInput, unknown, MisurazioneFormOutput>({
     resolver: zodResolver(misurazioneSchema),
-    defaultValues: misurazione ? misurazioneToFormInput(misurazione) : formInputVuoto(),
+    defaultValues: misurazione
+      ? misurazioneToFormInput(misurazione)
+      : formInputVuoto(),
     mode: "onBlur",
   });
 
@@ -55,7 +82,9 @@ export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps
   const sezioneCompilata = (id: SezioneId) =>
     CAMPI_PER_SEZIONE[id].some((c) => (valori[c.key] ?? "").trim() !== "");
 
-  const vaiAllaPrimaSezioneConErrori = (errs: FieldErrors<MisurazioneFormInput>) => {
+  const vaiAllaPrimaSezioneConErrori = (
+    errs: FieldErrors<MisurazioneFormInput>,
+  ) => {
     const target = ORDINE_SEZIONI.find((id) =>
       CAMPI_PER_SEZIONE[id].some((c) => Boolean(errs[c.key])),
     );
@@ -69,7 +98,9 @@ export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps
       const result = await salvaMisurazione(input, misurazione?.id ?? null);
 
       if (result.ok) {
-        toast.success(misurazione ? "Misurazione aggiornata" : "Misurazione salvata");
+        toast.success(
+          misurazione ? "Misurazione aggiornata" : "Misurazione salvata",
+        );
         onSuccess();
         return;
       }
@@ -77,7 +108,9 @@ export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps
       if (result.fieldErrors) {
         for (const [campo, messaggi] of Object.entries(result.fieldErrors)) {
           if (messaggi?.[0]) {
-            form.setError(campo as keyof MisurazioneFormInput, { message: messaggi[0] });
+            form.setError(campo as keyof MisurazioneFormInput, {
+              message: messaggi[0],
+            });
           }
         }
         vaiAllaPrimaSezioneConErrori(form.formState.errors);
@@ -120,7 +153,9 @@ export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
             <div
               className="h-full rounded-full bg-primary transition-all duration-300"
-              style={{ width: `${((indiceSezione + 1) / SEZIONI.length) * 100}%` }}
+              style={{
+                width: `${((indiceSezione + 1) / SEZIONI.length) * 100}%`,
+              }}
             />
           </div>
         </div>
@@ -142,7 +177,11 @@ export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps
                           : "bg-muted-foreground/20 text-foreground",
                     )}
                   >
-                    {compilata && !erroriSezione ? <CheckIcon className="size-3" /> : i + 1}
+                    {compilata && !erroriSezione ? (
+                      <CheckIcon className="size-3" />
+                    ) : (
+                      i + 1
+                    )}
                   </span>
                   <span className="hidden sm:inline">{s.label}</span>
                   <span className="sm:hidden">{s.label.split(" ")[0]}</span>
@@ -153,13 +192,15 @@ export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps
 
           {SEZIONI.map((s) => (
             <TabsContent key={s.id} value={s.id} className="pt-3">
-              <p className="mb-3 text-xs text-muted-foreground">{s.descrizione}</p>
+              <p className="mb-3 text-xs text-muted-foreground">
+                {s.descrizione}
+              </p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {CAMPI_PER_SEZIONE[s.id].map((campo) => (
                   <CampoNumerico
                     key={campo.key}
                     campo={campo}
-                    obbligatorio={campo.key === "peso_kg"}
+                    obbligatorio={CAMPI_OBBLIGATORI.includes(campo.key)}
                     errore={errors[campo.key]?.message}
                     disabled={occupato}
                     registrazione={form.register(campo.key)}
@@ -212,7 +253,11 @@ export function MisurazioneForm({ misurazione, onSuccess }: MisurazioneFormProps
 
         <Button type="submit" disabled={occupato} className="min-w-40">
           {occupato ? <Loader2Icon className="animate-spin" /> : <SaveIcon />}
-          {occupato ? "Salvataggio…" : misurazione ? "Salva modifiche" : "Salva misurazione"}
+          {occupato
+            ? "Salvataggio…"
+            : misurazione
+              ? "Salva modifiche"
+              : "Salva misurazione"}
         </Button>
       </div>
     </form>
@@ -224,17 +269,29 @@ interface CampoNumericoProps {
   obbligatorio?: boolean;
   errore?: string;
   disabled?: boolean;
-  registrazione: ReturnType<ReturnType<typeof useForm<MisurazioneFormInput>>["register"]>;
+  registrazione: ReturnType<
+    ReturnType<typeof useForm<MisurazioneFormInput>>["register"]
+  >;
 }
 
-function CampoNumerico({ campo, obbligatorio, errore, disabled, registrazione }: CampoNumericoProps) {
+function CampoNumerico({
+  campo,
+  obbligatorio,
+  errore,
+  disabled,
+  registrazione,
+}: CampoNumericoProps) {
   return (
     <div className="space-y-1.5">
       <Label htmlFor={campo.key} className="flex items-center justify-between">
         <span>
-          {campo.label} {obbligatorio && <span className="text-destructive">*</span>}
+          {campo.label}{" "}
+          {obbligatorio && <span className="text-destructive">*</span>}
         </span>
-        <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-medium">
+        <Badge
+          variant="secondary"
+          className="h-5 px-1.5 text-[10px] font-medium"
+        >
           {campo.unita}
         </Badge>
       </Label>
