@@ -16,13 +16,13 @@ export function ConfigurazioneMancante() {
   const t = useTranslations("setup");
 
   return (
-    <main className="relative flex min-h-svh items-center justify-center bg-muted/30 p-4">
-      <div className="absolute right-3" style={{ top: "max(0.75rem, env(safe-area-inset-top))" }}>
-        <LanguageSelect esteso />
-      </div>
+    <main className="flex min-h-svh items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-xl">
         <CardHeader>
-          <CardTitle className="text-xl">{t("titolo")}</CardTitle>
+          <div className="flex items-start justify-between gap-3">
+            <CardTitle className="text-xl">{t("titolo")}</CardTitle>
+            <LanguageSelect esteso className="-mt-1 -mr-1" />
+          </div>
           <CardDescription>{t("descrizione")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

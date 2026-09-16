@@ -45,11 +45,13 @@ export function LanguageSelect({ className, esteso = false }: LanguageSelectProp
       <SelectTrigger
         aria-label={t("cambia")}
         title={t("label")}
-        size="sm"
-        className={cn("gap-1 border-transparent bg-transparent shadow-none hover:bg-accent hover:text-accent-foreground dark:bg-transparent dark:hover:bg-accent", className)}
+        className={cn(
+          "h-9 gap-1.5 border-transparent bg-transparent px-2.5 shadow-none hover:bg-accent hover:text-accent-foreground dark:bg-transparent dark:hover:bg-accent",
+          className,
+        )}
       >
-        <GlobeIcon className="text-muted-foreground" />
-        <span className={cn("text-xs font-medium", !esteso && "uppercase")}>
+        <GlobeIcon className="size-4 text-muted-foreground" />
+        <span className={cn("text-sm font-medium", !esteso && "uppercase")}>
           {esteso ? LOCALE_INFO[locale].label : locale}
         </span>
       </SelectTrigger>
