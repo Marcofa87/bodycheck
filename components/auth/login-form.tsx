@@ -1,9 +1,10 @@
 "use client";
 
-import { CircleAlertIcon, CircleCheckIcon, EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useActionState, useState, type ReactNode } from "react";
 
-import { Button } from "@/components/ui/button";
+import { BottoneInvio } from "@/components/auth/bottone-invio";
+import { CampoPassword } from "@/components/auth/campo-password";
+import { MessaggioStato } from "@/components/auth/messaggio-stato";
 import {
   Card,
   CardContent,
@@ -17,12 +18,19 @@ import { Label } from "@/components/ui/label";
 import { autentica, type AuthState } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 
-type Modalita = "accedi" | "registrati";
+type Modalita = "accedi" | "registrati" | "recupera";
 
-const TESTI: Record<
-  Modalita,
-  { titolo: string; descrizione: string; bottone: string; bottoneAttesa: string; switchTesto: string; switchAzione: string }
-> = {
+interface Testi {
+  titolo: string;
+  descrizione: string;
+  bottone: string;
+  bottoneAttesa: string;
+  switchTesto: string;
+  switchAzione: string;
+  switchDestinazione: Modalita;
+}
+
+const TESTI: Record<Modalita, Testi> = {
   accedi: {
     titolo: "Bentornato",
     descrizione: "Accedi con email e password per vedere i tuoi progressi.",
@@ -30,6 +38,7 @@ const TESTI: Record<
     bottoneAttesa: "Accesso in corso…",
     switchTesto: "Non hai un account?",
     switchAzione: "Registrati",
+    switchDestinazione: "registrati",
   },
   registrati: {
     titolo: "Crea il tuo account",
@@ -38,6 +47,16 @@ const TESTI: Record<
     bottoneAttesa: "Registrazione in corso…",
     switchTesto: "Hai già un account?",
     switchAzione: "Accedi",
+    switchDestinazione: "accedi",
+  },
+  recupera: {
+    titolo: "Password dimenticata?",
+    descrizione: "Inserisci la tua email: ti invieremo un link per impostarne una nuova.",
+    bottone: "Invia link di reimpostazione",
+    bottoneAttesa: "Invio in corso…",
+    switchTesto: "Ricordi la password?",
+    switchAzione: "Torna al login",
+    switchDestinazione: "accedi",
   },
 };
 
@@ -47,6 +66,8 @@ interface LoginFormProps {
 
 export function LoginForm({ messaggioIniziale }: LoginFormProps) {
   const [modalita, setModalita] = useState<Modalita>("accedi");
+  // Controllata qui perché il cambio di `key` rimonta il form: l'email digitata non va persa.
+  const [email, setEmail] = useState("");
 
   return (
     <Card className="w-full max-w-sm">
@@ -54,8 +75,10 @@ export function LoginForm({ messaggioIniziale }: LoginFormProps) {
       <FormInterno
         key={modalita}
         modalita={modalita}
-        messaggioIniziale={messaggioIniziale}
-        onCambiaModalita={() => setModalita((m) => (m === "accedi" ? "registrati" : "accedi"))}
+        email={email}
+        onEmailChange={setEmail}
+        messaggioIniziale={modalita === "accedi" ? messaggioIniziale : undefined}
+        onCambiaModalita={setModalita}
       />
     </Card>
   );
@@ -63,18 +86,27 @@ export function LoginForm({ messaggioIniziale }: LoginFormProps) {
 
 interface FormInternoProps {
   modalita: Modalita;
+  email: string;
+  onEmailChange: (email: string) => void;
   messaggioIniziale?: string;
-  onCambiaModalita: () => void;
+  onCambiaModalita: (modalita: Modalita) => void;
 }
 
-function FormInterno({ modalita, messaggioIniziale, onCambiaModalita }: FormInternoProps) {
+function FormInterno({
+  modalita,
+  email,
+  onEmailChange,
+  messaggioIniziale,
+  onCambiaModalita,
+}: FormInternoProps) {
   const statoIniziale: AuthState = messaggioIniziale
     ? { status: "error", message: messaggioIniziale }
     : { status: "idle" };
 
   const [state, formAction, pending] = useActionState(autentica, statoIniziale);
-  const [mostraPassword, setMostraPassword] = useState(false);
   const testi = TESTI[modalita];
+  // Dopo l'invio del link il form non serve più: si mostra solo la conferma.
+  const linkInviato = modalita === "recupera" && state.status === "success";
 
   return (
     <form action={formAction} noValidate>
@@ -86,84 +118,77 @@ function FormInterno({ modalita, messaggioIniziale, onCambiaModalita }: FormInte
       </CardHeader>
 
       <CardContent className="space-y-4 pt-2">
-        <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            placeholder="nome@esempio.it"
-            required
-            disabled={pending}
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
-          <div className="relative">
+        {!linkInviato && (
+          <div className="space-y-1.5">
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="password"
-              name="password"
-              type={mostraPassword ? "text" : "password"}
-              autoComplete={modalita === "accedi" ? "current-password" : "new-password"}
-              placeholder="Almeno 6 caratteri"
-              minLength={6}
+              id="email"
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="nome@esempio.it"
+              value={email}
+              onChange={(e) => onEmailChange(e.target.value)}
               required
               disabled={pending}
-              className="pr-10"
             />
-            <button
-              type="button"
-              onClick={() => setMostraPassword((v) => !v)}
-              className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground"
-              aria-label={mostraPassword ? "Nascondi password" : "Mostra password"}
-              tabIndex={-1}
-            >
-              {mostraPassword ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
-            </button>
-          </div>
-        </div>
-
-        {state.status !== "idle" && (
-          <div
-            role={state.status === "error" ? "alert" : "status"}
-            className={cn(
-              "flex items-start gap-2 rounded-lg border px-3 py-2 text-sm",
-              state.status === "error"
-                ? "border-destructive/30 bg-destructive/5 text-destructive"
-                : "border-primary/30 bg-primary/5 text-primary",
-            )}
-          >
-            {state.status === "error" ? (
-              <CircleAlertIcon className="mt-0.5 size-4 shrink-0" />
-            ) : (
-              <CircleCheckIcon className="mt-0.5 size-4 shrink-0" />
-            )}
-            <span>{state.message}</span>
           </div>
         )}
+
+        {modalita !== "recupera" && (
+          <CampoPassword
+            id="password"
+            name="password"
+            label="Password"
+            autoComplete={modalita === "accedi" ? "current-password" : "new-password"}
+            disabled={pending}
+            azione={
+              modalita === "accedi" && (
+                <LinkModalita onClick={() => onCambiaModalita("recupera")} disabled={pending} className="text-xs">
+                  Password dimenticata?
+                </LinkModalita>
+              )
+            }
+          />
+        )}
+
+        <MessaggioStato state={state} />
       </CardContent>
 
       <CardFooter className="flex flex-col gap-3 pt-2">
-        <Button type="submit" className="w-full" size="lg" disabled={pending}>
-          {pending && <Loader2Icon className="animate-spin" />}
-          {pending ? testi.bottoneAttesa : testi.bottone}
-        </Button>
+        {!linkInviato && (
+          <BottoneInvio pending={pending} testo={testi.bottone} testoAttesa={testi.bottoneAttesa} />
+        )}
 
         <p className="text-center text-sm text-muted-foreground">
           {testi.switchTesto}{" "}
-          <button
-            type="button"
-            onClick={onCambiaModalita}
-            className="font-medium text-primary underline-offset-4 hover:underline"
-            disabled={pending}
-          >
+          <LinkModalita onClick={() => onCambiaModalita(testi.switchDestinazione)} disabled={pending}>
             {testi.switchAzione}
-          </button>
+          </LinkModalita>
         </p>
       </CardFooter>
     </form>
+  );
+}
+
+interface LinkModalitaProps {
+  onClick: () => void;
+  disabled?: boolean;
+  className?: string;
+  children: ReactNode;
+}
+
+/** Link testuale (button) per passare da una modalità all'altra del form. */
+function LinkModalita({ onClick, disabled, className, children }: LinkModalitaProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={cn("font-medium text-primary underline-offset-4 hover:underline", className)}
+    >
+      {children}
+    </button>
   );
 }

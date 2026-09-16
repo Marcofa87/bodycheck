@@ -6,7 +6,7 @@ App web per tracciare peso, composizione corporea e circonferenze di un singolo 
 
 ## Funzionalità
 
-- **Autenticazione** email/password (`/login`) con registrazione, conferma email e logout. Le route `/dashboard/**` sono protette da `proxy.ts` (il nuovo nome del middleware in Next 16) e ogni Server Action ri-verifica la sessione.
+- **Autenticazione** email/password (`/login`) con registrazione, conferma email, logout e recupero password ("Password dimenticata?" → email con link → `/reimposta-password`). Le route `/dashboard/**` sono protette da `proxy.ts` (il nuovo nome del middleware in Next 16) e ogni Server Action ri-verifica la sessione.
 - **Dashboard** (`/dashboard`): ultimo peso, massa magra, massa grassa e grasso corporeo con variazione ▲/▼ rispetto alla misurazione precedente, sparkline del peso (30/90 giorni), data ultima misurazione, empty state.
 - **Storico** (`/dashboard/storico`): tabella paginata, dialog di dettaglio con tutte le circonferenze, modifica (riapre il form precompilato) ed eliminazione con conferma, export CSV.
 - **Progressi** (`/dashboard/progressi`): grafico a linee per qualsiasi metrica (incluso il rapporto vita/fianchi calcolato), intervallo 7/30/90/365 giorni o tutto, riepilogo variazione/media/min/max, confronto con una seconda metrica.
@@ -19,15 +19,15 @@ App web per tracciare peso, composizione corporea e circonferenze di un singolo 
 
 1. Vai su [supabase.com](https://supabase.com), crea un nuovo progetto e attendi che sia pronto.
 2. Apri **SQL Editor → New query**, incolla il contenuto di [`supabase/schema.sql`](./supabase/schema.sql) ed esegui. Crea la tabella `misurazioni`, abilita la Row Level Security con le 4 policy (select/insert/update/delete solo sulle proprie righe) e l'indice `(user_id, data_misurazione desc)`.
-3. In **Authentication → Providers** assicurati che *Email* sia attivo. In **Authentication → URL Configuration** imposta:
-   - *Site URL*: `http://localhost:3000` (in produzione il dominio reale)
-   - *Redirect URLs*: aggiungi `http://localhost:3000/auth/callback`
+3. In **Authentication → Providers** assicurati che _Email_ sia attivo. In **Authentication → URL Configuration** imposta:
+   - _Site URL_: `http://localhost:3000` (in produzione il dominio reale)
+   - _Redirect URLs_: aggiungi `http://localhost:3000/auth/callback` (il link di recupero password usa lo stesso callback con `?next=/reimposta-password`; se il dominio è diverso dalla _Site URL_ usa il pattern `https://tuo-dominio/auth/callback*`)
 
-   > Se preferisci non richiedere la conferma email in sviluppo, disattiva *Confirm email* in **Authentication → Providers → Email**.
+   > Se preferisci non richiedere la conferma email in sviluppo, disattiva _Confirm email_ in **Authentication → Providers → Email**.
 
 ### 2. Configura le variabili d'ambiente
 
-In **Project Settings → API** copia *Project URL* e *anon public key*, poi in `.env.local`:
+In **Project Settings → API** copia _Project URL_ e _anon public key_, poi in `.env.local`:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=

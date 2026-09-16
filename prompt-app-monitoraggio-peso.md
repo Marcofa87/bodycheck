@@ -148,6 +148,7 @@ Il form deve essere diviso in **3 sezioni** (usa `Tabs` oppure un accordion, con
 | Polpaccio destro | cm |
 
 Requisiti del form:
+
 - Tutti i campi numerici, opzionali tranne **peso** e **data misurazione** (obbligatori).
 - Validazione con `zod` (valori positivi, range plausibili, es. peso 20–300 kg, percentuali 0–100).
 - Data della misurazione selezionabile (default: oggi).
