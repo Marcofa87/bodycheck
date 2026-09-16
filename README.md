@@ -30,8 +30,8 @@ App web per tracciare peso, composizione corporea e circonferenze di un singolo 
 In **Project Settings → API** copia *Project URL* e *anon public key*, poi in `.env.local`:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
 Finché i placeholder non vengono sostituiti l'app mostra una schermata con questi stessi passaggi.
