@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2Icon, LogOutIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useFormStatus } from "react-dom";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ export function LogoutButton({ variant = "ghost", size = "default", className, s
 }
 
 function Submit({ variant, size, className, soloIcona }: LogoutButtonProps) {
+  const t = useTranslations("nav");
   const { pending } = useFormStatus();
   return (
     <Button
@@ -30,10 +32,10 @@ function Submit({ variant, size, className, soloIcona }: LogoutButtonProps) {
       size={size}
       className={className}
       disabled={pending}
-      aria-label={soloIcona ? "Esci" : undefined}
+      aria-label={soloIcona ? t("esci") : undefined}
     >
       {pending ? <Loader2Icon className="animate-spin" /> : <LogOutIcon />}
-      {!soloIcona && (pending ? "Uscita…" : "Esci")}
+      {!soloIcona && (pending ? t("uscita") : t("esci"))}
     </Button>
   );
 }

@@ -1,9 +1,11 @@
 import { ActivityIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { NuovaMisurazioneButton } from "@/components/misurazioni/nuova-misurazione-button";
 import { Separator } from "@/components/ui/separator";
 
+import { LanguageSelect } from "./language-select";
 import { LogoutButton } from "./logout-button";
 import { SidebarNav } from "./nav-links";
 import { ThemeToggle } from "./theme-toggle";
@@ -14,6 +16,8 @@ interface SidebarProps {
 
 /** Sidebar fissa, visibile solo da lg in su. */
 export function Sidebar({ email }: SidebarProps) {
+  const t = useTranslations("comune");
+
   return (
     <aside className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground lg:flex">
       <div className="flex items-center gap-2 px-5 py-5">
@@ -21,7 +25,7 @@ export function Sidebar({ email }: SidebarProps) {
           <ActivityIcon className="size-4" />
         </span>
         <Link href="/dashboard" className="text-base font-semibold tracking-tight">
-          BodyTrack
+          {t("app")}
         </Link>
       </div>
 
@@ -35,14 +39,17 @@ export function Sidebar({ email }: SidebarProps) {
 
       <Separator />
 
-      <div className="flex items-center gap-2 p-3">
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-xs text-muted-foreground" title={email ?? undefined}>
-            {email ?? "Utente"}
-          </p>
+      <div className="flex flex-col gap-2 p-3">
+        <p className="truncate px-1 text-xs text-muted-foreground" title={email ?? undefined}>
+          {email ?? t("utente")}
+        </p>
+        <div className="flex items-center justify-between gap-1">
+          <LanguageSelect esteso />
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <LogoutButton size="icon" soloIcona />
+          </div>
         </div>
-        <ThemeToggle />
-        <LogoutButton size="icon" soloIcona />
       </div>
     </aside>
   );

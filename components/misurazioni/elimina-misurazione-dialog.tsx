@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2Icon, Trash2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
@@ -16,7 +17,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { eliminaMisurazione } from "@/lib/actions/misurazioni";
-import { formatData } from "@/lib/misurazioni/format";
+import { useFormatMisurazioni } from "@/lib/misurazioni/format";
 import type { Misurazione } from "@/lib/supabase/types";
 
 interface EliminaMisurazioneDialogProps {
@@ -32,6 +33,8 @@ export function EliminaMisurazioneDialog({
   onOpenChange,
   onEliminata,
 }: EliminaMisurazioneDialogProps) {
+  const t = useTranslations();
+  const formatter = useFormatMisurazioni();
   const [isPending, startTransition] = useTransition();
 
   const conferma = () => {
@@ -39,7 +42,7 @@ export function EliminaMisurazioneDialog({
     startTransition(async () => {
       const result = await eliminaMisurazione(misurazione.id);
       if (result.ok) {
-        toast.success("Misurazione eliminata");
+        toast.success(t("eliminazione.eliminata"));
         onOpenChange(false);
         onEliminata?.();
       } else {
@@ -55,15 +58,17 @@ export function EliminaMisurazioneDialog({
           <AlertDialogMedia className="bg-destructive/10 text-destructive">
             <Trash2Icon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Eliminare questa misurazione?</AlertDialogTitle>
+          <AlertDialogTitle>{t("eliminazione.titolo")}</AlertDialogTitle>
           <AlertDialogDescription>
             {misurazione
-              ? `La misurazione del ${formatData(misurazione.data_misurazione, "d MMMM yyyy")} verrà eliminata definitivamente. L'operazione non può essere annullata.`
-              : "L'operazione non può essere annullata."}
+              ? t("eliminazione.descrizioneConData", {
+                  data: formatter.data(misurazione.data_misurazione, "d MMMM yyyy"),
+                })
+              : t("eliminazione.descrizione")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Annulla</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>{t("comune.annulla")}</AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             className="bg-destructive text-white hover:bg-destructive/90"
@@ -71,7 +76,7 @@ export function EliminaMisurazioneDialog({
             disabled={isPending}
           >
             {isPending && <Loader2Icon className="animate-spin" />}
-            {isPending ? "Eliminazione…" : "Elimina"}
+            {isPending ? t("eliminazione.inCorso") : t("comune.elimina")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

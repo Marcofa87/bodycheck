@@ -1,6 +1,7 @@
 "use client";
 
 import { PencilIcon, Trash2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CAMPI_PER_SEZIONE, SEZIONI } from "@/lib/misurazioni/fields";
-import { formatDataLunga, formatNumero, formatValore } from "@/lib/misurazioni/format";
+import { useFormatMisurazioni } from "@/lib/misurazioni/format";
 import { rapportoVitaFianchi } from "@/lib/misurazioni/stats";
 import type { Misurazione } from "@/lib/supabase/types";
 
@@ -32,6 +33,8 @@ export function MisurazioneDettaglioDialog({
   onModifica,
   onElimina,
 }: MisurazioneDettaglioDialogProps) {
+  const t = useTranslations();
+  const formatter = useFormatMisurazioni();
   const rapporto = misurazione ? rapportoVitaFianchi(misurazione) : null;
   // Focus iniziale sul titolo: altrimenti andrebbe sul primo bottone ("Elimina")
   // e il dialog si aprirebbe già scrollato in fondo.
@@ -45,39 +48,43 @@ export function MisurazioneDettaglioDialog({
       >
         <DialogHeader>
           <DialogTitle ref={titoloRef} tabIndex={-1} className="outline-none">
-            Dettaglio misurazione
+            {t("dettaglio.titolo")}
           </DialogTitle>
           <DialogDescription>
-            {misurazione ? formatDataLunga(misurazione.data_misurazione) : ""}
+            {misurazione ? formatter.dataLunga(misurazione.data_misurazione) : ""}
           </DialogDescription>
         </DialogHeader>
 
         {misurazione && (
           <div className="space-y-5">
             {SEZIONI.map((sezione) => {
-              const campi = CAMPI_PER_SEZIONE[sezione.id];
+              const campi = CAMPI_PER_SEZIONE[sezione];
               const compilati = campi.filter((c) => misurazione[c.key] !== null);
               return (
-                <section key={sezione.id}>
+                <section key={sezione}>
                   <h3 className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                    {sezione.label}
+                    {t(`sezioni.${sezione}.label`)}
                   </h3>
                   {compilati.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nessun dato inserito.</p>
+                    <p className="text-sm text-muted-foreground">{t("dettaglio.nessunDato")}</p>
                   ) : (
                     <dl className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3">
                       {compilati.map((campo) => (
                         <div key={campo.key} className="rounded-lg bg-muted/50 px-2.5 py-2">
-                          <dt className="text-xs text-muted-foreground">{campo.label}</dt>
+                          <dt className="text-xs text-muted-foreground">
+                            {t(`campi.${campo.key}.label`)}
+                          </dt>
                           <dd className="font-medium tabular-nums">
-                            {formatValore(misurazione[campo.key], campo.unita)}
+                            {formatter.valore(misurazione[campo.key], campo.unita)}
                           </dd>
                         </div>
                       ))}
-                      {sezione.id === "gambe" && rapporto !== null && (
+                      {sezione === "gambe" && rapporto !== null && (
                         <div className="rounded-lg border border-dashed px-2.5 py-2">
-                          <dt className="text-xs text-muted-foreground">Rapporto vita/fianchi</dt>
-                          <dd className="font-medium tabular-nums">{formatNumero(rapporto, 2)}</dd>
+                          <dt className="text-xs text-muted-foreground">
+                            {t("dettaglio.rapportoVitaFianchi")}
+                          </dt>
+                          <dd className="font-medium tabular-nums">{formatter.numero(rapporto, 2)}</dd>
                         </div>
                       )}
                     </dl>
@@ -89,7 +96,7 @@ export function MisurazioneDettaglioDialog({
             {misurazione.note && (
               <section>
                 <h3 className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                  Note
+                  {t("comune.note")}
                 </h3>
                 <p className="text-sm whitespace-pre-wrap">{misurazione.note}</p>
               </section>
@@ -103,10 +110,10 @@ export function MisurazioneDettaglioDialog({
             onClick={() => misurazione && onElimina(misurazione)}
             className="text-destructive hover:text-destructive"
           >
-            <Trash2Icon /> Elimina
+            <Trash2Icon /> {t("comune.elimina")}
           </Button>
           <Button onClick={() => misurazione && onModifica(misurazione)}>
-            <PencilIcon /> Modifica
+            <PencilIcon /> {t("comune.modifica")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState, useState, type ReactNode } from "react";
 
 import { BottoneInvio } from "@/components/auth/bottone-invio";
@@ -20,44 +21,11 @@ import { cn } from "@/lib/utils";
 
 type Modalita = "accedi" | "registrati" | "recupera";
 
-interface Testi {
-  titolo: string;
-  descrizione: string;
-  bottone: string;
-  bottoneAttesa: string;
-  switchTesto: string;
-  switchAzione: string;
-  switchDestinazione: Modalita;
-}
-
-const TESTI: Record<Modalita, Testi> = {
-  accedi: {
-    titolo: "Bentornato",
-    descrizione: "Accedi con email e password per vedere i tuoi progressi.",
-    bottone: "Accedi",
-    bottoneAttesa: "Accesso in corso…",
-    switchTesto: "Non hai un account?",
-    switchAzione: "Registrati",
-    switchDestinazione: "registrati",
-  },
-  registrati: {
-    titolo: "Crea il tuo account",
-    descrizione: "Bastano email e password. Riceverai un'email di conferma.",
-    bottone: "Registrati",
-    bottoneAttesa: "Registrazione in corso…",
-    switchTesto: "Hai già un account?",
-    switchAzione: "Accedi",
-    switchDestinazione: "accedi",
-  },
-  recupera: {
-    titolo: "Password dimenticata?",
-    descrizione: "Inserisci la tua email: ti invieremo un link per impostarne una nuova.",
-    bottone: "Invia link di reimpostazione",
-    bottoneAttesa: "Invio in corso…",
-    switchTesto: "Ricordi la password?",
-    switchAzione: "Torna al login",
-    switchDestinazione: "accedi",
-  },
+/** Modalità raggiunta dal link in fondo al form. I testi sono in `auth.<modalita>.*`. */
+const SWITCH_DESTINAZIONE: Record<Modalita, Modalita> = {
+  accedi: "registrati",
+  registrati: "accedi",
+  recupera: "accedi",
 };
 
 interface LoginFormProps {
@@ -99,12 +67,12 @@ function FormInterno({
   messaggioIniziale,
   onCambiaModalita,
 }: FormInternoProps) {
+  const t = useTranslations("auth");
   const statoIniziale: AuthState = messaggioIniziale
     ? { status: "error", message: messaggioIniziale }
     : { status: "idle" };
 
   const [state, formAction, pending] = useActionState(autentica, statoIniziale);
-  const testi = TESTI[modalita];
   // Dopo l'invio del link il form non serve più: si mostra solo la conferma.
   const linkInviato = modalita === "recupera" && state.status === "success";
 
@@ -113,21 +81,21 @@ function FormInterno({
       <input type="hidden" name="modalita" value={modalita} />
 
       <CardHeader>
-        <CardTitle className="text-lg">{testi.titolo}</CardTitle>
-        <CardDescription>{testi.descrizione}</CardDescription>
+        <CardTitle className="text-lg">{t(`${modalita}.titolo`)}</CardTitle>
+        <CardDescription>{t(`${modalita}.descrizione`)}</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4 pt-2">
         {!linkInviato && (
           <div className="space-y-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               name="email"
               type="email"
               inputMode="email"
               autoComplete="email"
-              placeholder="nome@esempio.it"
+              placeholder={t("emailPlaceholder")}
               value={email}
               onChange={(e) => onEmailChange(e.target.value)}
               required
@@ -140,13 +108,13 @@ function FormInterno({
           <CampoPassword
             id="password"
             name="password"
-            label="Password"
+            label={t("password")}
             autoComplete={modalita === "accedi" ? "current-password" : "new-password"}
             disabled={pending}
             azione={
               modalita === "accedi" && (
                 <LinkModalita onClick={() => onCambiaModalita("recupera")} disabled={pending} className="text-xs">
-                  Password dimenticata?
+                  {t("passwordDimenticata")}
                 </LinkModalita>
               )
             }
@@ -158,13 +126,17 @@ function FormInterno({
 
       <CardFooter className="flex flex-col gap-3 pt-2">
         {!linkInviato && (
-          <BottoneInvio pending={pending} testo={testi.bottone} testoAttesa={testi.bottoneAttesa} />
+          <BottoneInvio
+            pending={pending}
+            testo={t(`${modalita}.bottone`)}
+            testoAttesa={t(`${modalita}.bottoneAttesa`)}
+          />
         )}
 
         <p className="text-center text-sm text-muted-foreground">
-          {testi.switchTesto}{" "}
-          <LinkModalita onClick={() => onCambiaModalita(testi.switchDestinazione)} disabled={pending}>
-            {testi.switchAzione}
+          {t(`${modalita}.switchTesto`)}{" "}
+          <LinkModalita onClick={() => onCambiaModalita(SWITCH_DESTINAZIONE[modalita])} disabled={pending}>
+            {t(`${modalita}.switchAzione`)}
           </LinkModalita>
         </p>
       </CardFooter>

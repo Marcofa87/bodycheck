@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "app": "BodyTrack",
+    "descrizione": "Monitora peso, composizione corporea e circonferenze nel tempo.",
+    "dashboard": "Dashboard",
+    "storico": "Storico",
+    "progressi": "Progressi",
+    "accedi": "Accedi",
+    "reimpostaPassword": "Reimposta password"
+  },
+  "comune": {
+    "app": "BodyTrack",
+    "utente": "Utente",
+    "note": "Note",
+    "azioni": "Azioni",
+    "dettagli": "Dettagli",
+    "modifica": "Modifica",
+    "elimina": "Elimina",
+    "annulla": "Annulla",
+    "chiudi": "Chiudi",
+    "misurazioni": "{count, plural, one {# misurazione} other {# misurazioni}}",
+    "giorni": "{giorni} gg"
+  },
+  "lingua": {
+    "label": "Lingua",
+    "cambia": "Cambia lingua"
+  },
+  "tema": {
+    "cambia": "Cambia tema"
+  },
+  "nav": {
+    "aria": "Navigazione principale",
+    "dashboard": "Dashboard",
+    "storico": "Storico",
+    "progressi": "Progressi",
+    "nuova": "Nuova",
+    "nuovaMisurazione": "Nuova misurazione",
+    "aggiungiMisurazione": "Aggiungi misurazione",
+    "esci": "Esci",
+    "uscita": "Uscita…"
+  },
+  "auth": {
+    "slogan": "Tieni traccia di peso, composizione corporea e circonferenze.",
+    "email": "Email",
+    "emailPlaceholder": "nome@esempio.it",
+    "password": "Password",
+    "passwordPlaceholder": "Almeno 6 caratteri",
+    "passwordDimenticata": "Password dimenticata?",
+    "mostraPassword": "Mostra password",
+    "nascondiPassword": "Nascondi password",
+    "accedi": {
+      "titolo": "Bentornato",
+      "descrizione": "Accedi con email e password per vedere i tuoi progressi.",
+      "bottone": "Accedi",
+      "bottoneAttesa": "Accesso in corso…",
+      "switchTesto": "Non hai un account?",
+      "switchAzione": "Registrati"
+    },
+    "registrati": {
+      "titolo": "Crea il tuo account",
+      "descrizione": "Bastano email e password. Riceverai un'email di conferma.",
+      "bottone": "Registrati",
+      "bottoneAttesa": "Registrazione in corso…",
+      "switchTesto": "Hai già un account?",
+      "switchAzione": "Accedi"
+    },
+    "recupera": {
+      "titolo": "Password dimenticata?",
+      "descrizione": "Inserisci la tua email: ti invieremo un link per impostarne una nuova.",
+      "bottone": "Invia link di reimpostazione",
+      "bottoneAttesa": "Invio in corso…",
+      "switchTesto": "Ricordi la password?",
+      "switchAzione": "Torna al login"
+    },
+    "reimposta": {
+      "titolo": "Scegli una nuova password",
+      "descrizioneConEmail": "Stai reimpostando la password di <b>{email}</b>.",
+      "descrizione": "Inserisci la nuova password per il tuo account.",
+      "nuovaPassword": "Nuova password",
+      "confermaPassword": "Conferma password",
+      "ripetiPassword": "Ripeti la password",
+      "bottone": "Salva nuova password",
+      "bottoneAttesa": "Salvataggio in corso…"
+    },
+    "successo": {
+      "registrazione": "Registrazione completata! Controlla la tua email e clicca sul link di conferma.",
+      "recupero": "Se esiste un account con questa email riceverai a breve un link per reimpostare la password. Controlla anche la cartella spam."
+    },
+    "errori": {
+      "linkNonValido": "Il link non è valido o è scaduto. Prova ad accedere, registrati di nuovo oppure richiedi un nuovo link con “Password dimenticata?”.",
+      "emailNonValida": "Inserisci un indirizzo email valido",
+      "passwordCorta": "La password deve avere almeno 6 caratteri",
+      "passwordDiverse": "Le due password non coincidono.",
+      "datiNonValidi": "Dati non validi",
+      "server": "Impossibile contattare il server. Riprova più tardi.",
+      "invalid_credentials": "Email o password non corretti.",
+      "email_not_confirmed": "Devi confermare l'email prima di accedere: controlla la tua casella di posta.",
+      "user_already_exists": "Esiste già un account con questa email. Prova ad accedere.",
+      "weak_password": "La password è troppo debole: usa almeno 6 caratteri.",
+      "same_password": "La nuova password deve essere diversa da quella attuale.",
+      "session_expired": "Il link non è più valido o la sessione è scaduta. Richiedi un nuovo link di reimpostazione.",
+      "rate_limit": "Troppi tentativi: attendi qualche minuto e riprova.",
+      "signup_disabled": "La registrazione non è al momento disponibile.",
+      "validation_failed": "I dati inseriti non sono validi.",
+      "generico": "Si è verificato un errore durante l'autenticazione. Riprova."
+    }
+  },
+  "setup": {
+    "titolo": "Configura Supabase per iniziare",
+    "descrizione": "BodyTrack non trova le credenziali del progetto Supabase. Completa questi passaggi:",
+    "passi": {
+      "progetto": {
+        "titolo": "Crea il progetto Supabase",
+        "testo": "Vai su supabase.com, crea un nuovo progetto e attendi che il database sia pronto."
+      },
+      "schema": {
+        "titolo": "Esegui lo schema SQL",
+        "testo": "Nel SQL Editor incolla ed esegui il contenuto di supabase/schema.sql (tabella, RLS e indici)."
+      },
+      "chiavi": {
+        "titolo": "Copia le chiavi in .env.local",
+        "testo": "Da Project Settings → API copia Project URL e anon public key e sostituisci i placeholder."
+      },
+      "riavvia": {
+        "titolo": "Riavvia il server",
+        "testo": "Ferma e riavvia `pnpm dev`: le variabili d'ambiente vengono lette all'avvio."
+      }
+    }
+  },
+  "dashboard": {
+    "titolo": "Dashboard",
+    "descrizioneVuota": "Il riepilogo dei tuoi dati corporei.",
+    "descrizione": "Ultima misurazione: {data}",
+    "ultimaMisurazione": "Ultima misurazione",
+    "misurazioniTotali": "Misurazioni totali",
+    "note": "Note: ",
+    "vediStorico": "Vedi tutto lo storico",
+    "nessunDato": "Nessun dato registrato",
+    "primaMisurazione": "Prima misurazione",
+    "stabile": "Stabile",
+    "andamentoPeso": "Andamento peso",
+    "nessunaNelPeriodo": "Nessuna misurazione negli ultimi {giorni} giorni",
+    "unaNelPeriodo": "{count, plural, one {# misurazione} other {# misurazioni}} nel periodo",
+    "variazioneNelPeriodo": "{variazione} in {giorni} giorni · {count, plural, one {# misurazione} other {# misurazioni}}",
+    "aggiungiPerGrafico": "Aggiungi misurazioni per vedere il grafico"
+  },
+  "emptyState": {
+    "titolo": "Inserisci la tua prima misurazione",
+    "descrizione": "Registra peso e circonferenze per iniziare a seguire i tuoi progressi. Bastano pochi secondi."
+  },
+  "storico": {
+    "titolo": "Storico",
+    "descrizione": "Tutte le misurazioni registrate, dalla più recente.",
+    "esportaCsv": "Esporta CSV",
+    "vuotoTitolo": "Nessuna misurazione ancora",
+    "vuotoDescrizione": "Quando inserirai la prima misurazione la troverai qui, insieme a tutte le successive.",
+    "colonnaData": "Data",
+    "pagina": "Pagina <b>{pagina}</b> di <b>{totale}</b>",
+    "precedente": "Precedente",
+    "successiva": "Successiva",
+    "paginaPrecedente": "Pagina precedente",
+    "paginaSuccessiva": "Pagina successiva"
+  },
+  "progressi": {
+    "titolo": "Progressi",
+    "descrizione": "Scegli una metrica e un periodo per vedere come cambia nel tempo.",
+    "vuotoTitolo": "Ancora nessun dato da mostrare",
+    "vuotoDescrizione": "I grafici appariranno non appena avrai registrato almeno una misurazione.",
+    "metrica": "Metrica",
+    "confrontaCon": "Confronta con",
+    "nessunConfronto": "Nessun confronto",
+    "periodo": "Periodo",
+    "unAnno": "1 anno",
+    "tutto": "Tutto",
+    "variazioneNelPeriodo": "Variazione nel periodo",
+    "media": "Media",
+    "minimo": "Minimo",
+    "massimo": "Massimo",
+    "nessunDatoPeriodo": "Nessun dato per questa metrica nel periodo selezionato.",
+    "confrontoCon": "Confronto con {metrica} (asse destro).",
+    "andamentoTutto": "Andamento su tutto lo storico.",
+    "andamentoPeriodo": "Andamento negli ultimi {periodo}.",
+    "registraPerGrafico": "Registra misurazioni con questo valore per vedere il grafico",
+    "calcolate": "Calcolate",
+    "rapportoVitaFianchi": "Rapporto vita/fianchi",
+    "rapportoVitaFianchiCalcolato": "Rapporto vita/fianchi (calcolato)"
+  },
+  "form": {
+    "nuovaTitolo": "Nuova misurazione",
+    "nuovaDescrizione": "Compila le tre sezioni: solo peso e data sono obbligatori.",
+    "modificaTitolo": "Modifica misurazione",
+    "modificaDescrizione": "Aggiorna i valori e salva le modifiche.",
+    "data": "Data misurazione",
+    "sezioneDi": "Sezione {n} di {totale}",
+    "note": "Note",
+    "notePlaceholder": "Es. misurazione a digiuno, dopo allenamento…",
+    "placeholder": "es. {esempio}",
+    "sezionePrecedente": "Sezione precedente",
+    "sezioneSuccessiva": "Sezione successiva",
+    "salvataggio": "Salvataggio…",
+    "salvaModifiche": "Salva modifiche",
+    "salvaMisurazione": "Salva misurazione",
+    "salvata": "Misurazione salvata",
+    "aggiornata": "Misurazione aggiornata"
+  },
+  "dettaglio": {
+    "titolo": "Dettaglio misurazione",
+    "nessunDato": "Nessun dato inserito.",
+    "rapportoVitaFianchi": "Rapporto vita/fianchi"
+  },
+  "eliminazione": {
+    "titolo": "Eliminare questa misurazione?",
+    "descrizioneConData": "La misurazione del {data} verrà eliminata definitivamente. L'operazione non può essere annullata.",
+    "descrizione": "L'operazione non può essere annullata.",
+    "inCorso": "Eliminazione…",
+    "eliminata": "Misurazione eliminata"
+  },
+  "sezioni": {
+    "chiave": {
+      "label": "Statistiche chiave",
+      "breve": "Statistiche",
+      "descrizione": "Peso, composizione corporea e circonferenze del tronco."
+    },
+    "braccia": {
+      "label": "Braccia",
+      "breve": "Braccia",
+      "descrizione": "Circonferenza delle braccia."
+    },
+    "gambe": {
+      "label": "Gambe",
+      "breve": "Gambe",
+      "descrizione": "Fianchi, cosce e polpacci."
+    }
+  },
+  "campi": {
+    "peso_kg": { "label": "Peso", "short": "Peso" },
+    "massa_grassa_kg": { "label": "Massa grassa", "short": "M. grassa" },
+    "massa_magra_kg": { "label": "Massa magra", "short": "M. magra" },
+    "grasso_corporeo_percentuale": { "label": "Grasso corporeo", "short": "Grasso %" },
+    "collo_cm": { "label": "Collo", "short": "Collo" },
+    "torace_superiore_cm": { "label": "Parte superiore torace", "short": "Torace sup." },
+    "petto_cm": { "label": "Petto", "short": "Petto" },
+    "vita_cm": { "label": "Vita", "short": "Vita" },
+    "braccio_sinistro_cm": { "label": "Braccio sinistro", "short": "Braccio sx" },
+    "braccio_destro_cm": { "label": "Braccio destro", "short": "Braccio dx" },
+    "fianchi_cm": { "label": "Fianchi", "short": "Fianchi" },
+    "vita_fianchi_cm": { "label": "Vita-fianchi", "short": "Vita-fianchi" },
+    "coscia_superiore_sinistra_cm": { "label": "Coscia superiore sinistra", "short": "Coscia sup. sx" },
+    "coscia_superiore_destra_cm": { "label": "Coscia superiore destra", "short": "Coscia sup. dx" },
+    "coscia_inferiore_sinistra_cm": { "label": "Coscia inferiore sinistra", "short": "Coscia inf. sx" },
+    "coscia_inferiore_destra_cm": { "label": "Coscia inferiore destra", "short": "Coscia inf. dx" },
+    "polpaccio_sinistro_cm": { "label": "Polpaccio sinistro", "short": "Polpaccio sx" },
+    "polpaccio_destro_cm": { "label": "Polpaccio destro", "short": "Polpaccio dx" }
+  },
+  "validazione": {
+    "numeroNonValido": "Inserisci un numero valido",
+    "positivo": "Il valore deve essere positivo",
+    "range": "Valore plausibile tra {min} e {max} {unita}",
+    "obbligatorio": "{campo} è obbligatorio",
+    "dataNonValida": "Seleziona una data valida",
+    "dataFutura": "La data non può essere nel futuro",
+    "noteMax": "Massimo 1000 caratteri"
+  },
+  "azioni": {
+    "controllaCampi": "Controlla i campi evidenziati.",
+    "nonTrovata": "Misurazione non trovata.",
+    "nonModificabile": "Misurazione non trovata o non modificabile.",
+    "salvataggioFallito": "Salvataggio non riuscito. Riprova tra qualche istante.",
+    "giaEliminata": "Misurazione non trovata o già eliminata.",
+    "eliminazioneFallita": "Eliminazione non riuscita. Riprova tra qualche istante."
+  },
+  "csv": {
+    "data": "Data",
+    "note": "Note",
+    "nonAutorizzato": "Non autorizzato",
+    "fallita": "Esportazione non riuscita"
+  }
+}

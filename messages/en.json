@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "app": "BodyTrack",
+    "descrizione": "Track your weight, body composition and circumferences over time.",
+    "dashboard": "Dashboard",
+    "storico": "History",
+    "progressi": "Progress",
+    "accedi": "Sign in",
+    "reimpostaPassword": "Reset password"
+  },
+  "comune": {
+    "app": "BodyTrack",
+    "utente": "User",
+    "note": "Notes",
+    "azioni": "Actions",
+    "dettagli": "Details",
+    "modifica": "Edit",
+    "elimina": "Delete",
+    "annulla": "Cancel",
+    "chiudi": "Close",
+    "misurazioni": "{count, plural, one {# measurement} other {# measurements}}",
+    "giorni": "{giorni}d"
+  },
+  "lingua": {
+    "label": "Language",
+    "cambia": "Change language"
+  },
+  "tema": {
+    "cambia": "Toggle theme"
+  },
+  "nav": {
+    "aria": "Main navigation",
+    "dashboard": "Dashboard",
+    "storico": "History",
+    "progressi": "Progress",
+    "nuova": "New",
+    "nuovaMisurazione": "New measurement",
+    "aggiungiMisurazione": "Add measurement",
+    "esci": "Sign out",
+    "uscita": "Signing out…"
+  },
+  "auth": {
+    "slogan": "Keep track of your weight, body composition and circumferences.",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "At least 6 characters",
+    "passwordDimenticata": "Forgot your password?",
+    "mostraPassword": "Show password",
+    "nascondiPassword": "Hide password",
+    "accedi": {
+      "titolo": "Welcome back",
+      "descrizione": "Sign in with your email and password to see your progress.",
+      "bottone": "Sign in",
+      "bottoneAttesa": "Signing in…",
+      "switchTesto": "Don't have an account?",
+      "switchAzione": "Sign up"
+    },
+    "registrati": {
+      "titolo": "Create your account",
+      "descrizione": "All you need is an email and a password. You'll receive a confirmation email.",
+      "bottone": "Sign up",
+      "bottoneAttesa": "Signing up…",
+      "switchTesto": "Already have an account?",
+      "switchAzione": "Sign in"
+    },
+    "recupera": {
+      "titolo": "Forgot your password?",
+      "descrizione": "Enter your email and we'll send you a link to set a new one.",
+      "bottone": "Send reset link",
+      "bottoneAttesa": "Sending…",
+      "switchTesto": "Remembered your password?",
+      "switchAzione": "Back to sign in"
+    },
+    "reimposta": {
+      "titolo": "Choose a new password",
+      "descrizioneConEmail": "You are resetting the password for <b>{email}</b>.",
+      "descrizione": "Enter the new password for your account.",
+      "nuovaPassword": "New password",
+      "confermaPassword": "Confirm password",
+      "ripetiPassword": "Repeat the password",
+      "bottone": "Save new password",
+      "bottoneAttesa": "Saving…"
+    },
+    "successo": {
+      "registrazione": "Registration complete! Check your email and click the confirmation link.",
+      "recupero": "If an account exists for this email you'll shortly receive a link to reset your password. Check your spam folder too."
+    },
+    "errori": {
+      "linkNonValido": "The link is invalid or has expired. Try signing in, sign up again or request a new link with “Forgot your password?”.",
+      "emailNonValida": "Enter a valid email address",
+      "passwordCorta": "The password must be at least 6 characters long",
+      "passwordDiverse": "The two passwords don't match.",
+      "datiNonValidi": "Invalid data",
+      "server": "Unable to reach the server. Please try again later.",
+      "invalid_credentials": "Incorrect email or password.",
+      "email_not_confirmed": "You need to confirm your email before signing in: check your inbox.",
+      "user_already_exists": "An account with this email already exists. Try signing in.",
+      "weak_password": "The password is too weak: use at least 6 characters.",
+      "same_password": "The new password must be different from the current one.",
+      "session_expired": "The link is no longer valid or the session has expired. Request a new reset link.",
+      "rate_limit": "Too many attempts: wait a few minutes and try again.",
+      "signup_disabled": "Registration is currently unavailable.",
+      "validation_failed": "The data you entered is not valid.",
+      "generico": "An error occurred during authentication. Please try again."
+    }
+  },
+  "setup": {
+    "titolo": "Set up Supabase to get started",
+    "descrizione": "BodyTrack can't find the credentials of your Supabase project. Complete these steps:",
+    "passi": {
+      "progetto": {
+        "titolo": "Create the Supabase project",
+        "testo": "Go to supabase.com, create a new project and wait for the database to be ready."
+      },
+      "schema": {
+        "titolo": "Run the SQL schema",
+        "testo": "In the SQL Editor paste and run the contents of supabase/schema.sql (table, RLS and indexes)."
+      },
+      "chiavi": {
+        "titolo": "Copy the keys into .env.local",
+        "testo": "From Project Settings → API copy the Project URL and anon public key and replace the placeholders."
+      },
+      "riavvia": {
+        "titolo": "Restart the server",
+        "testo": "Stop and restart `pnpm dev`: environment variables are read on startup."
+      }
+    }
+  },
+  "dashboard": {
+    "titolo": "Dashboard",
+    "descrizioneVuota": "An overview of your body data.",
+    "descrizione": "Last measurement: {data}",
+    "ultimaMisurazione": "Last measurement",
+    "misurazioniTotali": "Total measurements",
+    "note": "Notes: ",
+    "vediStorico": "See full history",
+    "nessunDato": "No data recorded",
+    "primaMisurazione": "First measurement",
+    "stabile": "Stable",
+    "andamentoPeso": "Weight trend",
+    "nessunaNelPeriodo": "No measurements in the last {giorni} days",
+    "unaNelPeriodo": "{count, plural, one {# measurement} other {# measurements}} in this period",
+    "variazioneNelPeriodo": "{variazione} in {giorni} days · {count, plural, one {# measurement} other {# measurements}}",
+    "aggiungiPerGrafico": "Add measurements to see the chart"
+  },
+  "emptyState": {
+    "titolo": "Add your first measurement",
+    "descrizione": "Record your weight and circumferences to start following your progress. It only takes a few seconds."
+  },
+  "storico": {
+    "titolo": "History",
+    "descrizione": "All recorded measurements, most recent first.",
+    "esportaCsv": "Export CSV",
+    "vuotoTitolo": "No measurements yet",
+    "vuotoDescrizione": "Once you add your first measurement you'll find it here, along with all the following ones.",
+    "colonnaData": "Date",
+    "pagina": "Page <b>{pagina}</b> of <b>{totale}</b>",
+    "precedente": "Previous",
+    "successiva": "Next",
+    "paginaPrecedente": "Previous page",
+    "paginaSuccessiva": "Next page"
+  },
+  "progressi": {
+    "titolo": "Progress",
+    "descrizione": "Pick a metric and a period to see how it changes over time.",
+    "vuotoTitolo": "Nothing to show yet",
+    "vuotoDescrizione": "Charts will appear as soon as you record at least one measurement.",
+    "metrica": "Metric",
+    "confrontaCon": "Compare with",
+    "nessunConfronto": "No comparison",
+    "periodo": "Period",
+    "unAnno": "1 year",
+    "tutto": "All",
+    "variazioneNelPeriodo": "Change in period",
+    "media": "Average",
+    "minimo": "Minimum",
+    "massimo": "Maximum",
+    "nessunDatoPeriodo": "No data for this metric in the selected period.",
+    "confrontoCon": "Compared with {metrica} (right axis).",
+    "andamentoTutto": "Trend over the full history.",
+    "andamentoPeriodo": "Trend over the last {periodo}.",
+    "registraPerGrafico": "Record measurements with this value to see the chart",
+    "calcolate": "Calculated",
+    "rapportoVitaFianchi": "Waist-to-hip ratio",
+    "rapportoVitaFianchiCalcolato": "Waist-to-hip ratio (calculated)"
+  },
+  "form": {
+    "nuovaTitolo": "New measurement",
+    "nuovaDescrizione": "Fill in the three sections: only weight and date are required.",
+    "modificaTitolo": "Edit measurement",
+    "modificaDescrizione": "Update the values and save your changes.",
+    "data": "Measurement date",
+    "sezioneDi": "Section {n} of {totale}",
+    "note": "Notes",
+    "notePlaceholder": "E.g. measured while fasting, after training…",
+    "placeholder": "e.g. {esempio}",
+    "sezionePrecedente": "Previous section",
+    "sezioneSuccessiva": "Next section",
+    "salvataggio": "Saving…",
+    "salvaModifiche": "Save changes",
+    "salvaMisurazione": "Save measurement",
+    "salvata": "Measurement saved",
+    "aggiornata": "Measurement updated"
+  },
+  "dettaglio": {
+    "titolo": "Measurement details",
+    "nessunDato": "No data entered.",
+    "rapportoVitaFianchi": "Waist-to-hip ratio"
+  },
+  "eliminazione": {
+    "titolo": "Delete this measurement?",
+    "descrizioneConData": "The measurement from {data} will be permanently deleted. This action cannot be undone.",
+    "descrizione": "This action cannot be undone.",
+    "inCorso": "Deleting…",
+    "eliminata": "Measurement deleted"
+  },
+  "sezioni": {
+    "chiave": {
+      "label": "Key stats",
+      "breve": "Key",
+      "descrizione": "Weight, body composition and torso circumferences."
+    },
+    "braccia": {
+      "label": "Arms",
+      "breve": "Arms",
+      "descrizione": "Arm circumferences."
+    },
+    "gambe": {
+      "label": "Legs",
+      "breve": "Legs",
+      "descrizione": "Hips, thighs and calves."
+    }
+  },
+  "campi": {
+    "peso_kg": { "label": "Weight", "short": "Weight" },
+    "massa_grassa_kg": { "label": "Fat mass", "short": "Fat mass" },
+    "massa_magra_kg": { "label": "Lean mass", "short": "Lean mass" },
+    "grasso_corporeo_percentuale": { "label": "Body fat", "short": "Body fat %" },
+    "collo_cm": { "label": "Neck", "short": "Neck" },
+    "torace_superiore_cm": { "label": "Upper chest", "short": "Upper chest" },
+    "petto_cm": { "label": "Chest", "short": "Chest" },
+    "vita_cm": { "label": "Waist", "short": "Waist" },
+    "braccio_sinistro_cm": { "label": "Left arm", "short": "L arm" },
+    "braccio_destro_cm": { "label": "Right arm", "short": "R arm" },
+    "fianchi_cm": { "label": "Hips", "short": "Hips" },
+    "vita_fianchi_cm": { "label": "Waist-hips", "short": "Waist-hips" },
+    "coscia_superiore_sinistra_cm": { "label": "Left upper thigh", "short": "L upper thigh" },
+    "coscia_superiore_destra_cm": { "label": "Right upper thigh", "short": "R upper thigh" },
+    "coscia_inferiore_sinistra_cm": { "label": "Left lower thigh", "short": "L lower thigh" },
+    "coscia_inferiore_destra_cm": { "label": "Right lower thigh", "short": "R lower thigh" },
+    "polpaccio_sinistro_cm": { "label": "Left calf", "short": "L calf" },
+    "polpaccio_destro_cm": { "label": "Right calf", "short": "R calf" }
+  },
+  "validazione": {
+    "numeroNonValido": "Enter a valid number",
+    "positivo": "The value must be positive",
+    "range": "Plausible value between {min} and {max} {unita}",
+    "obbligatorio": "{campo} is required",
+    "dataNonValida": "Select a valid date",
+    "dataFutura": "The date cannot be in the future",
+    "noteMax": "Maximum 1000 characters"
+  },
+  "azioni": {
+    "controllaCampi": "Check the highlighted fields.",
+    "nonTrovata": "Measurement not found.",
+    "nonModificabile": "Measurement not found or not editable.",
+    "salvataggioFallito": "Saving failed. Please try again in a moment.",
+    "giaEliminata": "Measurement not found or already deleted.",
+    "eliminazioneFallita": "Deletion failed. Please try again in a moment."
+  },
+  "csv": {
+    "data": "Date",
+    "note": "Notes",
+    "nonAutorizzato": "Unauthorized",
+    "fallita": "Export failed"
+  }
+}

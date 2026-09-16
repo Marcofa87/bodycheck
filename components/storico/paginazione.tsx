@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -12,6 +13,7 @@ interface PaginazioneProps {
 }
 
 export function Paginazione({ pagina, pagineTotali, totale, base }: PaginazioneProps) {
+  const t = useTranslations();
   const precedente = pagina > 1 ? pagina - 1 : null;
   const successiva = pagina < pagineTotali ? pagina + 1 : null;
 
@@ -20,17 +22,20 @@ export function Paginazione({ pagina, pagineTotali, totale, base }: PaginazioneP
   return (
     <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
       <p>
-        Pagina <span className="font-medium text-foreground">{pagina}</span> di{" "}
-        <span className="font-medium text-foreground">{pagineTotali}</span>
-        <span className="hidden sm:inline"> · {totale} misurazioni</span>
+        {t.rich("storico.pagina", {
+          pagina,
+          totale: pagineTotali,
+          b: (chunks) => <span className="font-medium text-foreground">{chunks}</span>,
+        })}
+        <span className="hidden sm:inline"> · {t("comune.misurazioni", { count: totale })}</span>
       </p>
 
       <div className="flex items-center gap-2">
-        <LinkPagina href={precedente ? hrefPagina(precedente) : null} label="Pagina precedente">
-          <ChevronLeftIcon /> <span className="hidden sm:inline">Precedente</span>
+        <LinkPagina href={precedente ? hrefPagina(precedente) : null} label={t("storico.paginaPrecedente")}>
+          <ChevronLeftIcon /> <span className="hidden sm:inline">{t("storico.precedente")}</span>
         </LinkPagina>
-        <LinkPagina href={successiva ? hrefPagina(successiva) : null} label="Pagina successiva">
-          <span className="hidden sm:inline">Successiva</span> <ChevronRightIcon />
+        <LinkPagina href={successiva ? hrefPagina(successiva) : null} label={t("storico.paginaSuccessiva")}>
+          <span className="hidden sm:inline">{t("storico.successiva")}</span> <ChevronRightIcon />
         </LinkPagina>
       </div>
     </div>

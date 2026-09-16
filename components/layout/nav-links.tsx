@@ -1,6 +1,7 @@
 "use client";
 
 import { HistoryIcon, LayoutDashboardIcon, TrendingUpIcon, type LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,14 +9,15 @@ import { cn } from "@/lib/utils";
 
 interface NavItem {
   href: "/dashboard" | "/dashboard/storico" | "/dashboard/progressi";
-  label: string;
+  /** Chiave in `nav.*` con l'etichetta tradotta. */
+  chiave: "dashboard" | "storico" | "progressi";
   icon: LucideIcon;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
-  { href: "/dashboard/storico", label: "Storico", icon: HistoryIcon },
-  { href: "/dashboard/progressi", label: "Progressi", icon: TrendingUpIcon },
+  { href: "/dashboard", chiave: "dashboard", icon: LayoutDashboardIcon },
+  { href: "/dashboard/storico", chiave: "storico", icon: HistoryIcon },
+  { href: "/dashboard/progressi", chiave: "progressi", icon: TrendingUpIcon },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -24,9 +26,10 @@ function isActive(pathname: string, href: string) {
 
 /** Navigazione verticale per la sidebar desktop. */
 export function SidebarNav() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   return (
-    <nav className="flex flex-col gap-1" aria-label="Navigazione principale">
+    <nav className="flex flex-col gap-1" aria-label={t("aria")}>
       {NAV_ITEMS.map((item) => {
         const active = isActive(pathname, item.href);
         return (
@@ -42,7 +45,7 @@ export function SidebarNav() {
             )}
           >
             <item.icon className="size-4" />
-            {item.label}
+            {t(item.chiave)}
           </Link>
         );
       })}
@@ -52,12 +55,13 @@ export function SidebarNav() {
 
 /** Tab bar fissa in basso per mobile. */
 export function MobileNav() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80 lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      aria-label="Navigazione principale"
+      aria-label={t("aria")}
     >
       <ul className="grid grid-cols-3">
         {NAV_ITEMS.map((item) => {
@@ -73,7 +77,7 @@ export function MobileNav() {
                 )}
               >
                 <item.icon className={cn("size-5", active && "fill-primary/15")} />
-                {item.label}
+                {t(item.chiave)}
               </Link>
             </li>
           );

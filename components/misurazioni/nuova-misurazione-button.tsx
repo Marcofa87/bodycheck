@@ -1,6 +1,7 @@
 "use client";
 
 import { PlusIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { ComponentProps } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -8,22 +9,25 @@ import { Button } from "@/components/ui/button";
 import { useMisurazioneSheet } from "./misurazione-sheet-provider";
 
 type Props = Omit<ComponentProps<typeof Button>, "onClick" | "children"> & {
-  /** Testo del bottone; su schermi piccoli può essere nascosto con `nascondiTestoSuMobile`. */
+  /** Testo del bottone (default: "Nuova misurazione"); su schermi piccoli può essere nascosto con `nascondiTestoSuMobile`. */
   testo?: string;
   nascondiTestoSuMobile?: boolean;
 };
 
 export function NuovaMisurazioneButton({
-  testo = "Nuova misurazione",
+  testo,
   nascondiTestoSuMobile = false,
   ...props
 }: Props) {
+  const t = useTranslations("nav");
   const { apriNuova } = useMisurazioneSheet();
 
   return (
     <Button onClick={apriNuova} {...props}>
       <PlusIcon />
-      <span className={nascondiTestoSuMobile ? "hidden sm:inline" : undefined}>{testo}</span>
+      <span className={nascondiTestoSuMobile ? "hidden sm:inline" : undefined}>
+        {testo ?? t("nuovaMisurazione")}
+      </span>
     </Button>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState, type ComponentProps, type ReactNode } from "react";
 
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ export function CampoPassword({
   className,
   ...props
 }: CampoPasswordProps) {
+  const t = useTranslations("auth");
   const [visibile, setVisibile] = useState(false);
 
   return (
@@ -40,7 +42,7 @@ export function CampoPassword({
           id={id}
           name={name}
           type={visibile ? "text" : "password"}
-          placeholder="Almeno 6 caratteri"
+          placeholder={t("passwordPlaceholder")}
           minLength={6}
           required
           className={cn("pr-10", className)}
@@ -50,7 +52,7 @@ export function CampoPassword({
           type="button"
           onClick={() => setVisibile((v) => !v)}
           className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground"
-          aria-label={visibile ? "Nascondi password" : "Mostra password"}
+          aria-label={visibile ? t("nascondiPassword") : t("mostraPassword")}
           tabIndex={-1}
         >
           {visibile ? (

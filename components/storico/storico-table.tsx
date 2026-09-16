@@ -1,6 +1,7 @@
 "use client";
 
 import { EyeIcon, MoreHorizontalIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { EliminaMisurazioneDialog } from "@/components/misurazioni/elimina-misurazione-dialog";
@@ -22,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatData, formatNumero } from "@/lib/misurazioni/format";
+import { useFormatMisurazioni } from "@/lib/misurazioni/format";
 import type { Misurazione } from "@/lib/supabase/types";
 
 interface StoricoTableProps {
@@ -30,6 +31,8 @@ interface StoricoTableProps {
 }
 
 export function StoricoTable({ righe }: StoricoTableProps) {
+  const t = useTranslations();
+  const formatter = useFormatMisurazioni();
   const { apriModifica } = useMisurazioneSheet();
   const [dettaglio, setDettaglio] = useState<Misurazione | null>(null);
   const [daEliminare, setDaEliminare] = useState<Misurazione | null>(null);
@@ -50,13 +53,19 @@ export function StoricoTable({ righe }: StoricoTableProps) {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead>Data</TableHead>
-              <TableHead className="text-right">Peso</TableHead>
-              <TableHead className="hidden text-right md:table-cell">M. magra</TableHead>
-              <TableHead className="hidden text-right md:table-cell">M. grassa</TableHead>
-              <TableHead className="hidden text-right sm:table-cell">Grasso %</TableHead>
+              <TableHead>{t("storico.colonnaData")}</TableHead>
+              <TableHead className="text-right">{t("campi.peso_kg.short")}</TableHead>
+              <TableHead className="hidden text-right md:table-cell">
+                {t("campi.massa_magra_kg.short")}
+              </TableHead>
+              <TableHead className="hidden text-right md:table-cell">
+                {t("campi.massa_grassa_kg.short")}
+              </TableHead>
+              <TableHead className="hidden text-right sm:table-cell">
+                {t("campi.grasso_corporeo_percentuale.short")}
+              </TableHead>
               <TableHead className="w-12">
-                <span className="sr-only">Azioni</span>
+                <span className="sr-only">{t("comune.azioni")}</span>
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -68,7 +77,7 @@ export function StoricoTable({ righe }: StoricoTableProps) {
                 onClick={() => setDettaglio(m)}
               >
                 <TableCell>
-                  <div className="font-medium">{formatData(m.data_misurazione)}</div>
+                  <div className="font-medium">{formatter.data(m.data_misurazione)}</div>
                   {m.note && (
                     <div className="max-w-40 truncate text-xs text-muted-foreground sm:max-w-60">
                       {m.note}
@@ -76,34 +85,34 @@ export function StoricoTable({ righe }: StoricoTableProps) {
                   )}
                 </TableCell>
                 <TableCell className="text-right font-medium tabular-nums">
-                  {formatNumero(m.peso_kg)} <span className="text-xs text-muted-foreground">kg</span>
+                  {formatter.numero(m.peso_kg)} <span className="text-xs text-muted-foreground">kg</span>
                 </TableCell>
                 <TableCell className="hidden text-right tabular-nums md:table-cell">
-                  {formatNumero(m.massa_magra_kg)}
+                  {formatter.numero(m.massa_magra_kg)}
                 </TableCell>
                 <TableCell className="hidden text-right tabular-nums md:table-cell">
-                  {formatNumero(m.massa_grassa_kg)}
+                  {formatter.numero(m.massa_grassa_kg)}
                 </TableCell>
                 <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                  {formatNumero(m.grasso_corporeo_percentuale)}
+                  {formatter.numero(m.grasso_corporeo_percentuale)}
                 </TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <DropdownMenu>
                     <DropdownMenuTrigger
-                      render={<Button variant="ghost" size="icon-sm" aria-label="Azioni" />}
+                      render={<Button variant="ghost" size="icon-sm" aria-label={t("comune.azioni")} />}
                     >
                       <MoreHorizontalIcon />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="min-w-40">
                       <DropdownMenuItem onClick={() => setDettaglio(m)}>
-                        <EyeIcon /> Dettagli
+                        <EyeIcon /> {t("comune.dettagli")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => modifica(m)}>
-                        <PencilIcon /> Modifica
+                        <PencilIcon /> {t("comune.modifica")}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem variant="destructive" onClick={() => elimina(m)}>
-                        <Trash2Icon /> Elimina
+                        <Trash2Icon /> {t("comune.elimina")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

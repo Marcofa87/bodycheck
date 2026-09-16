@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 
 import { Toaster } from "@/components/ui/sonner";
@@ -11,14 +13,17 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "BodyTrack",
-    template: "%s · BodyTrack",
-  },
-  description: "Monitora peso, composizione corporea e circonferenze nel tempo.",
-  applicationName: "BodyTrack",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return {
+    title: {
+      default: t("app"),
+      template: `%s · ${t("app")}`,
+    },
+    description: t("descrizione"),
+    applicationName: t("app"),
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -30,14 +35,18 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
+
   return (
-    <html lang="it" className={`${geist.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang={locale} className={`${geist.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-          <Toaster position="top-center" richColors closeButton />
-        </ThemeProvider>
+        <NextIntlClientProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            {children}
+            <Toaster position="top-center" richColors closeButton />
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

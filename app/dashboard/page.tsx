@@ -1,25 +1,34 @@
 import type { Metadata } from "next";
 import { CalendarDaysIcon, ChevronRightIcon, ListIcon } from "lucide-react";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { WeightSparkline } from "@/components/dashboard/weight-sparkline";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatData, formatDataLunga } from "@/lib/misurazioni/format";
+import { creaFormatter } from "@/lib/misurazioni/format";
 import { getMisurazioni } from "@/lib/misurazioni/queries";
 import { serieMetrica, ultimoValore } from "@/lib/misurazioni/stats";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return { title: t("dashboard") };
+}
 
 export default async function DashboardPage() {
-  const misurazioni = await getMisurazioni();
+  const [misurazioni, t, locale] = await Promise.all([
+    getMisurazioni(),
+    getTranslations("dashboard"),
+    getLocale(),
+  ]);
+  const formatter = creaFormatter(locale);
 
   if (misurazioni.length === 0) {
     return (
       <>
-        <PageHeader titolo="Dashboard" descrizione="Il riepilogo dei tuoi dati corporei." />
+        <PageHeader titolo={t("titolo")} descrizione={t("descrizioneVuota")} />
         <EmptyState />
       </>
     );
@@ -31,8 +40,8 @@ export default async function DashboardPage() {
   return (
     <>
       <PageHeader
-        titolo="Dashboard"
-        descrizione={`Ultima misurazione: ${formatDataLunga(ultima.data_misurazione)}`}
+        titolo={t("titolo")}
+        descrizione={t("descrizione", { data: formatter.dataLunga(ultima.data_misurazione) })}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -59,8 +68,8 @@ export default async function DashboardPage() {
                   <CalendarDaysIcon className="size-4" />
                 </span>
                 <div>
-                  <p className="text-xs text-muted-foreground">Ultima misurazione</p>
-                  <p className="font-medium">{formatData(ultima.data_misurazione, "d MMMM yyyy")}</p>
+                  <p className="text-xs text-muted-foreground">{t("ultimaMisurazione")}</p>
+                  <p className="font-medium">{formatter.data(ultima.data_misurazione, "d MMMM yyyy")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -68,13 +77,13 @@ export default async function DashboardPage() {
                   <ListIcon className="size-4" />
                 </span>
                 <div>
-                  <p className="text-xs text-muted-foreground">Misurazioni totali</p>
+                  <p className="text-xs text-muted-foreground">{t("misurazioniTotali")}</p>
                   <p className="font-medium tabular-nums">{misurazioni.length}</p>
                 </div>
               </div>
               {ultima.note && (
                 <p className="rounded-lg bg-muted/60 p-2.5 text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">Note: </span>
+                  <span className="font-medium text-foreground">{t("note")}</span>
                   {ultima.note}
                 </p>
               )}
@@ -84,7 +93,7 @@ export default async function DashboardPage() {
               href="/dashboard/storico"
               className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
             >
-              Vedi tutto lo storico <ChevronRightIcon className="size-4" />
+              {t("vediStorico")} <ChevronRightIcon className="size-4" />
             </Link>
           </CardContent>
         </Card>

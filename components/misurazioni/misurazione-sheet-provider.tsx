@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 
 import {
@@ -26,6 +27,7 @@ const MisurazioneSheetContext = createContext<MisurazioneSheetContextValue | nul
  * così il bottone "+ Nuova misurazione" e l'azione "Modifica" possono aprirlo da ovunque.
  */
 export function MisurazioneSheetProvider({ children }: { children: ReactNode }) {
+  const t = useTranslations("form");
   const [open, setOpen] = useState(false);
   const [misurazione, setMisurazione] = useState<Misurazione | null>(null);
 
@@ -53,11 +55,9 @@ export function MisurazioneSheetProvider({ children }: { children: ReactNode }) 
           className="gap-0 p-0 data-[side=right]:w-full data-[side=right]:sm:max-w-lg"
         >
           <SheetHeader className="border-b pr-12">
-            <SheetTitle>{misurazione ? "Modifica misurazione" : "Nuova misurazione"}</SheetTitle>
+            <SheetTitle>{misurazione ? t("modificaTitolo") : t("nuovaTitolo")}</SheetTitle>
             <SheetDescription>
-              {misurazione
-                ? "Aggiorna i valori e salva le modifiche."
-                : "Compila le tre sezioni: solo peso e data sono obbligatori."}
+              {misurazione ? t("modificaDescrizione") : t("nuovaDescrizione")}
             </SheetDescription>
           </SheetHeader>
 

@@ -1,12 +1,13 @@
 "use client";
 
 import { differenceInCalendarDays, parseISO } from "date-fns";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatData, formatNumero, formatVariazione } from "@/lib/misurazioni/format";
+import { useFormatMisurazioni } from "@/lib/misurazioni/format";
 import type { PuntoSerie } from "@/lib/misurazioni/stats";
 
 interface WeightSparklineProps {
@@ -17,6 +18,8 @@ interface WeightSparklineProps {
 type Periodo = "30" | "90";
 
 export function WeightSparkline({ serie }: WeightSparklineProps) {
+  const t = useTranslations();
+  const formatter = useFormatMisurazioni();
   const [periodo, setPeriodo] = useState<Periodo>("30");
 
   const dati = useMemo(() => {
@@ -37,23 +40,31 @@ export function WeightSparkline({ serie }: WeightSparklineProps) {
     return [Math.floor(min - margine), Math.ceil(max + margine)];
   }, [dati]);
 
+  const giorni = Number(periodo);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between gap-4">
         <div>
-          <CardTitle className="text-sm font-medium text-muted-foreground">Andamento peso</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {t("dashboard.andamentoPeso")}
+          </CardTitle>
           <CardDescription>
             {dati.length === 0
-              ? `Nessuna misurazione negli ultimi ${periodo} giorni`
+              ? t("dashboard.nessunaNelPeriodo", { giorni })
               : variazione === null
-                ? `${dati.length} misurazione nel periodo`
-                : `${formatVariazione(variazione, "kg")} in ${periodo} giorni · ${dati.length} misurazioni`}
+                ? t("dashboard.unaNelPeriodo", { count: dati.length })
+                : t("dashboard.variazioneNelPeriodo", {
+                    variazione: formatter.variazione(variazione, "kg"),
+                    giorni,
+                    count: dati.length,
+                  })}
           </CardDescription>
         </div>
         <Tabs value={periodo} onValueChange={(v) => setPeriodo(v as Periodo)}>
           <TabsList>
-            <TabsTrigger value="30">30 gg</TabsTrigger>
-            <TabsTrigger value="90">90 gg</TabsTrigger>
+            <TabsTrigger value="30">{t("comune.giorni", { giorni: 30 })}</TabsTrigger>
+            <TabsTrigger value="90">{t("comune.giorni", { giorni: 90 })}</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
@@ -61,7 +72,7 @@ export function WeightSparkline({ serie }: WeightSparklineProps) {
         <div className="h-36 w-full">
           {dati.length === 0 ? (
             <div className="flex h-full items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
-              Aggiungi misurazioni per vedere il grafico
+              {t("dashboard.aggiungiPerGrafico")}
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
@@ -81,8 +92,8 @@ export function WeightSparkline({ serie }: WeightSparklineProps) {
                     const punto = payload[0].payload as PuntoSerie;
                     return (
                       <div className="rounded-lg border bg-popover px-2.5 py-1.5 text-xs shadow-md">
-                        <p className="text-muted-foreground">{formatData(punto.data, "d MMMM yyyy")}</p>
-                        <p className="font-semibold tabular-nums">{formatNumero(punto.valore)} kg</p>
+                        <p className="text-muted-foreground">{formatter.data(punto.data, "d MMMM yyyy")}</p>
+                        <p className="font-semibold tabular-nums">{formatter.valore(punto.valore, "kg")}</p>
                       </div>
                     );
                   }}

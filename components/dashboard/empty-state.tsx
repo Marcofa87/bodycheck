@@ -1,4 +1,5 @@
 import { ScaleIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { NuovaMisurazioneButton } from "@/components/misurazioni/nuova-misurazione-button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,11 +10,9 @@ interface EmptyStateProps {
   mostraBottone?: boolean;
 }
 
-export function EmptyState({
-  titolo = "Inserisci la tua prima misurazione",
-  descrizione = "Registra peso e circonferenze per iniziare a seguire i tuoi progressi. Bastano pochi secondi.",
-  mostraBottone = true,
-}: EmptyStateProps) {
+export function EmptyState({ titolo, descrizione, mostraBottone = true }: EmptyStateProps) {
+  const t = useTranslations();
+
   return (
     <Card className="border-dashed">
       <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
@@ -21,10 +20,12 @@ export function EmptyState({
           <ScaleIcon className="size-7" />
         </span>
         <div className="space-y-1">
-          <h2 className="text-lg font-semibold">{titolo}</h2>
-          <p className="max-w-sm text-sm text-muted-foreground">{descrizione}</p>
+          <h2 className="text-lg font-semibold">{titolo ?? t("emptyState.titolo")}</h2>
+          <p className="max-w-sm text-sm text-muted-foreground">
+            {descrizione ?? t("emptyState.descrizione")}
+          </p>
         </div>
-        {mostraBottone && <NuovaMisurazioneButton size="lg" testo="Aggiungi misurazione" />}
+        {mostraBottone && <NuovaMisurazioneButton size="lg" testo={t("nav.aggiungiMisurazione")} />}
       </CardContent>
     </Card>
   );

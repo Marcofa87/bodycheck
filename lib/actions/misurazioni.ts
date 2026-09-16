@@ -1,17 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 
 import { requireUser } from "@/lib/auth/session";
-import { misurazioneSchema, type MisurazioneFormInput } from "@/lib/misurazioni/schema";
+import { creaMisurazioneSchema, type MisurazioneFormInput } from "@/lib/misurazioni/schema";
 import { createClient } from "@/lib/supabase/server";
 
 export type ActionResult =
   | { ok: true }
   | { ok: false; error: string; fieldErrors?: Record<string, string[] | undefined> };
 
-const uuidSchema = z.uuid("Identificativo non valido");
+const uuidSchema = z.uuid();
 
 /**
  * Crea (id assente) o aggiorna (id presente) una misurazione.
@@ -22,19 +23,20 @@ export async function salvaMisurazione(
   id?: string | null,
 ): Promise<ActionResult> {
   const user = await requireUser();
+  const t = await getTranslations();
 
-  const parsed = misurazioneSchema.safeParse(input);
+  const parsed = creaMisurazioneSchema(t).safeParse(input);
   if (!parsed.success) {
     return {
       ok: false,
-      error: "Controlla i campi evidenziati.",
+      error: t("azioni.controllaCampi"),
       fieldErrors: z.flattenError(parsed.error).fieldErrors,
     };
   }
 
   if (id) {
     const idParsed = uuidSchema.safeParse(id);
-    if (!idParsed.success) return { ok: false, error: "Misurazione non trovata." };
+    if (!idParsed.success) return { ok: false, error: t("azioni.nonTrovata") };
   }
 
   try {
@@ -50,7 +52,7 @@ export async function salvaMisurazione(
         .maybeSingle();
 
       if (error) throw error;
-      if (!data) return { ok: false, error: "Misurazione non trovata o non modificabile." };
+      if (!data) return { ok: false, error: t("azioni.nonModificabile") };
     } else {
       const { error } = await supabase
         .from("misurazioni")
@@ -60,7 +62,7 @@ export async function salvaMisurazione(
     }
   } catch (err) {
     console.error("[salvaMisurazione]", err);
-    return { ok: false, error: "Salvataggio non riuscito. Riprova tra qualche istante." };
+    return { ok: false, error: t("azioni.salvataggioFallito") };
   }
 
   revalidatePath("/dashboard", "layout");
@@ -69,9 +71,10 @@ export async function salvaMisurazione(
 
 export async function eliminaMisurazione(id: string): Promise<ActionResult> {
   const user = await requireUser();
+  const t = await getTranslations("azioni");
 
   const idParsed = uuidSchema.safeParse(id);
-  if (!idParsed.success) return { ok: false, error: "Misurazione non trovata." };
+  if (!idParsed.success) return { ok: false, error: t("nonTrovata") };
 
   try {
     const supabase = await createClient();
@@ -84,10 +87,10 @@ export async function eliminaMisurazione(id: string): Promise<ActionResult> {
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) return { ok: false, error: "Misurazione non trovata o già eliminata." };
+    if (!data) return { ok: false, error: t("giaEliminata") };
   } catch (err) {
     console.error("[eliminaMisurazione]", err);
-    return { ok: false, error: "Eliminazione non riuscita. Riprova tra qualche istante." };
+    return { ok: false, error: t("eliminazioneFallita") };
   }
 
   revalidatePath("/dashboard", "layout");

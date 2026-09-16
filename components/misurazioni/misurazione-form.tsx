@@ -8,7 +8,8 @@ import {
   Loader2Icon,
   SaveIcon,
 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useMemo, useState, useTransition } from "react";
 import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -25,9 +26,10 @@ import {
   type CampoMetrica,
   type SezioneId,
 } from "@/lib/misurazioni/fields";
+import { useFormatMisurazioni } from "@/lib/misurazioni/format";
 import {
+  creaMisurazioneSchema,
   formInputVuoto,
-  misurazioneSchema,
   misurazioneToFormInput,
   oggiISO,
   type MisurazioneFormInput,
@@ -42,8 +44,6 @@ interface MisurazioneFormProps {
   onSuccess: () => void;
 }
 
-const ORDINE_SEZIONI = SEZIONI.map((s) => s.id);
-
 const CAMPI_OBBLIGATORI = [
   "peso_kg",
   "massa_grassa_kg",
@@ -55,17 +55,24 @@ const CAMPI_OBBLIGATORI = [
   "fianchi_cm",
 ];
 
+/** Valore di esempio per il placeholder, in base all'unità. */
+const ESEMPI: Record<CampoMetrica["unita"], number> = { "%": 18.5, kg: 72.5, cm: 80 };
+
 export function MisurazioneForm({
   misurazione,
   onSuccess,
 }: MisurazioneFormProps) {
+  const t = useTranslations();
+  const locale = useLocale();
   const [sezione, setSezione] = useState<SezioneId>("chiave");
   const [isPending, startTransition] = useTransition();
 
+  const schema = useMemo(() => creaMisurazioneSchema(t), [t]);
+
   const form = useForm<MisurazioneFormInput, unknown, MisurazioneFormOutput>({
-    resolver: zodResolver(misurazioneSchema),
+    resolver: zodResolver(schema),
     defaultValues: misurazione
-      ? misurazioneToFormInput(misurazione)
+      ? misurazioneToFormInput(misurazione, locale)
       : formInputVuoto(),
     mode: "onBlur",
   });
@@ -74,7 +81,7 @@ export function MisurazioneForm({
   const valori = useWatch({ control: form.control });
   // Solo la transition: isSubmitting sarebbe true anche durante la validazione zod
   const occupato = isPending;
-  const indiceSezione = ORDINE_SEZIONI.indexOf(sezione);
+  const indiceSezione = SEZIONI.indexOf(sezione);
 
   const sezioneConErrori = (id: SezioneId) =>
     CAMPI_PER_SEZIONE[id].some((c) => Boolean(errors[c.key]));
@@ -85,7 +92,7 @@ export function MisurazioneForm({
   const vaiAllaPrimaSezioneConErrori = (
     errs: FieldErrors<MisurazioneFormInput>,
   ) => {
-    const target = ORDINE_SEZIONI.find((id) =>
+    const target = SEZIONI.find((id) =>
       CAMPI_PER_SEZIONE[id].some((c) => Boolean(errs[c.key])),
     );
     if (target) setSezione(target);
@@ -98,9 +105,7 @@ export function MisurazioneForm({
       const result = await salvaMisurazione(input, misurazione?.id ?? null);
 
       if (result.ok) {
-        toast.success(
-          misurazione ? "Misurazione aggiornata" : "Misurazione salvata",
-        );
+        toast.success(misurazione ? t("form.aggiornata") : t("form.salvata"));
         onSuccess();
         return;
       }
@@ -129,7 +134,7 @@ export function MisurazioneForm({
         {/* Data */}
         <div className="space-y-1.5">
           <Label htmlFor="data_misurazione">
-            Data misurazione <span className="text-destructive">*</span>
+            {t("form.data")} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="data_misurazione"
@@ -145,10 +150,8 @@ export function MisurazioneForm({
         {/* Indicatore di avanzamento */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Sezione {indiceSezione + 1} di {SEZIONI.length}
-            </span>
-            <span>{SEZIONI[indiceSezione].label}</span>
+            <span>{t("form.sezioneDi", { n: indiceSezione + 1, totale: SEZIONI.length })}</span>
+            <span>{t(`sezioni.${sezione}.label`)}</span>
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
             <div
@@ -162,11 +165,11 @@ export function MisurazioneForm({
 
         <Tabs value={sezione} onValueChange={(v) => setSezione(v as SezioneId)}>
           <TabsList className="grid w-full grid-cols-3">
-            {SEZIONI.map((s, i) => {
-              const erroriSezione = sezioneConErrori(s.id);
-              const compilata = sezioneCompilata(s.id);
+            {SEZIONI.map((id, i) => {
+              const erroriSezione = sezioneConErrori(id);
+              const compilata = sezioneCompilata(id);
               return (
-                <TabsTrigger key={s.id} value={s.id} className="gap-1.5">
+                <TabsTrigger key={id} value={id} className="gap-1.5">
                   <span
                     className={cn(
                       "flex size-4 items-center justify-center rounded-full text-[10px] font-semibold",
@@ -183,20 +186,20 @@ export function MisurazioneForm({
                       i + 1
                     )}
                   </span>
-                  <span className="hidden sm:inline">{s.label}</span>
-                  <span className="sm:hidden">{s.label.split(" ")[0]}</span>
+                  <span className="hidden sm:inline">{t(`sezioni.${id}.label`)}</span>
+                  <span className="sm:hidden">{t(`sezioni.${id}.breve`)}</span>
                 </TabsTrigger>
               );
             })}
           </TabsList>
 
-          {SEZIONI.map((s) => (
-            <TabsContent key={s.id} value={s.id} className="pt-3">
+          {SEZIONI.map((id) => (
+            <TabsContent key={id} value={id} className="pt-3">
               <p className="mb-3 text-xs text-muted-foreground">
-                {s.descrizione}
+                {t(`sezioni.${id}.descrizione`)}
               </p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {CAMPI_PER_SEZIONE[s.id].map((campo) => (
+                {CAMPI_PER_SEZIONE[id].map((campo) => (
                   <CampoNumerico
                     key={campo.key}
                     campo={campo}
@@ -213,11 +216,11 @@ export function MisurazioneForm({
 
         {/* Note */}
         <div className="space-y-1.5">
-          <Label htmlFor="note">Note</Label>
+          <Label htmlFor="note">{t("form.note")}</Label>
           <Textarea
             id="note"
             rows={3}
-            placeholder="Es. misurazione a digiuno, dopo allenamento…"
+            placeholder={t("form.notePlaceholder")}
             aria-invalid={Boolean(errors.note)}
             disabled={occupato}
             {...form.register("note")}
@@ -234,8 +237,8 @@ export function MisurazioneForm({
             variant="outline"
             size="icon"
             disabled={indiceSezione === 0 || occupato}
-            onClick={() => setSezione(ORDINE_SEZIONI[indiceSezione - 1])}
-            aria-label="Sezione precedente"
+            onClick={() => setSezione(SEZIONI[indiceSezione - 1])}
+            aria-label={t("form.sezionePrecedente")}
           >
             <ChevronLeftIcon />
           </Button>
@@ -243,9 +246,9 @@ export function MisurazioneForm({
             type="button"
             variant="outline"
             size="icon"
-            disabled={indiceSezione === ORDINE_SEZIONI.length - 1 || occupato}
-            onClick={() => setSezione(ORDINE_SEZIONI[indiceSezione + 1])}
-            aria-label="Sezione successiva"
+            disabled={indiceSezione === SEZIONI.length - 1 || occupato}
+            onClick={() => setSezione(SEZIONI[indiceSezione + 1])}
+            aria-label={t("form.sezioneSuccessiva")}
           >
             <ChevronRightIcon />
           </Button>
@@ -254,10 +257,10 @@ export function MisurazioneForm({
         <Button type="submit" disabled={occupato} className="min-w-40">
           {occupato ? <Loader2Icon className="animate-spin" /> : <SaveIcon />}
           {occupato
-            ? "Salvataggio…"
+            ? t("form.salvataggio")
             : misurazione
-              ? "Salva modifiche"
-              : "Salva misurazione"}
+              ? t("form.salvaModifiche")
+              : t("form.salvaMisurazione")}
         </Button>
       </div>
     </form>
@@ -281,11 +284,14 @@ function CampoNumerico({
   disabled,
   registrazione,
 }: CampoNumericoProps) {
+  const t = useTranslations();
+  const formatter = useFormatMisurazioni();
+
   return (
     <div className="space-y-1.5">
       <Label htmlFor={campo.key} className="flex items-center justify-between">
         <span>
-          {campo.label}{" "}
+          {t(`campi.${campo.key}.label`)}{" "}
           {obbligatorio && <span className="text-destructive">*</span>}
         </span>
         <Badge
@@ -300,7 +306,7 @@ function CampoNumerico({
         type="text"
         inputMode="decimal"
         autoComplete="off"
-        placeholder={`es. ${campo.unita === "%" ? "18,5" : campo.unita === "kg" ? "72,5" : "80"}`}
+        placeholder={t("form.placeholder", { esempio: formatter.perInput(ESEMPI[campo.unita]) })}
         aria-invalid={Boolean(errore)}
         disabled={disabled}
         {...registrazione}

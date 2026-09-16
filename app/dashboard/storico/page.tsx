@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DownloadIcon } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
@@ -8,20 +9,25 @@ import { StoricoTable } from "@/components/storico/storico-table";
 import { buttonVariants } from "@/components/ui/button";
 import { getMisurazioniPaginate } from "@/lib/misurazioni/queries";
 
-export const metadata: Metadata = { title: "Storico" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return { title: t("storico") };
+}
 
 export default async function StoricoPage({ searchParams }: PageProps<"/dashboard/storico">) {
   const { page } = await searchParams;
   const pagina = Number(Array.isArray(page) ? page[0] : page) || 1;
 
-  const { righe, totale, pagina: paginaCorrente, pagineTotali } =
-    await getMisurazioniPaginate(pagina);
+  const [{ righe, totale, pagina: paginaCorrente, pagineTotali }, t] = await Promise.all([
+    getMisurazioniPaginate(pagina),
+    getTranslations("storico"),
+  ]);
 
   return (
     <>
       <PageHeader
-        titolo="Storico"
-        descrizione="Tutte le misurazioni registrate, dalla più recente."
+        titolo={t("titolo")}
+        descrizione={t("descrizione")}
         azioni={
           totale > 0 ? (
             <a
@@ -29,17 +35,14 @@ export default async function StoricoPage({ searchParams }: PageProps<"/dashboar
               download
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
-              <DownloadIcon /> Esporta CSV
+              <DownloadIcon /> {t("esportaCsv")}
             </a>
           ) : undefined
         }
       />
 
       {totale === 0 ? (
-        <EmptyState
-          titolo="Nessuna misurazione ancora"
-          descrizione="Quando inserirai la prima misurazione la troverai qui, insieme a tutte le successive."
-        />
+        <EmptyState titolo={t("vuotoTitolo")} descrizione={t("vuotoDescrizione")} />
       ) : (
         <div className="space-y-4">
           <StoricoTable righe={righe} />
