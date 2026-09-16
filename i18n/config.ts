@@ -18,6 +18,8 @@ export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 export interface LocaleInfo {
   /** Nome della lingua nella lingua stessa, mostrato nel selettore. */
   label: string;
+  /** Icona circolare della bandiera in `public/`. */
+  bandiera: string;
   /** Tag BCP 47 usato da `Intl` per numeri e date. */
   intl: string;
   dateFns: DateFnsLocale;
@@ -26,8 +28,20 @@ export interface LocaleInfo {
 }
 
 export const LOCALE_INFO: Record<Locale, LocaleInfo> = {
-  en: { label: "English", intl: "en-GB", dateFns: enGB, separatoreCsv: "," },
-  it: { label: "Italiano", intl: "it-IT", dateFns: it, separatoreCsv: ";" },
+  en: {
+    label: "English",
+    bandiera: "/icons8-circolare-inglese-24.png",
+    intl: "en-GB",
+    dateFns: enGB,
+    separatoreCsv: ",",
+  },
+  it: {
+    label: "Italiano",
+    bandiera: "/icons8-circolare-italia-48.png",
+    intl: "it-IT",
+    dateFns: it,
+    separatoreCsv: ";",
+  },
 };
 
 export function isLocale(value: unknown): value is Locale {

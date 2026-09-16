@@ -1,6 +1,5 @@
 "use client";
 
-import { GlobeIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -11,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import { LOCALES, LOCALE_INFO, isLocale } from "@/i18n/config";
+import { LOCALES, LOCALE_INFO, isLocale, type Locale } from "@/i18n/config";
 import { impostaLingua } from "@/lib/actions/lingua";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +25,10 @@ const ITEMS: Record<string, string> = Object.fromEntries(
 );
 
 /** Selettore della lingua dell'interfaccia: salva la scelta in un cookie e ri-renderizza la pagina. */
-export function LanguageSelect({ className, esteso = false }: LanguageSelectProps) {
+export function LanguageSelect({
+  className,
+  esteso = false,
+}: LanguageSelectProps) {
   const locale = useLocale();
   const t = useTranslations("lingua");
   const router = useRouter();
@@ -41,7 +43,12 @@ export function LanguageSelect({ className, esteso = false }: LanguageSelectProp
   };
 
   return (
-    <Select items={ITEMS} value={locale} onValueChange={cambia} disabled={isPending}>
+    <Select
+      items={ITEMS}
+      value={locale}
+      onValueChange={cambia}
+      disabled={isPending}
+    >
       <SelectTrigger
         aria-label={t("cambia")}
         title={t("label")}
@@ -50,18 +57,37 @@ export function LanguageSelect({ className, esteso = false }: LanguageSelectProp
           className,
         )}
       >
-        <GlobeIcon className="size-4 text-muted-foreground" />
+        <Bandiera locale={locale} />
         <span className={cn("text-sm font-medium", !esteso && "uppercase")}>
           {esteso ? LOCALE_INFO[locale].label : locale}
         </span>
       </SelectTrigger>
-      <SelectContent align="end" alignItemWithTrigger={false} className="min-w-36 w-auto">
+      <SelectContent
+        align="end"
+        alignItemWithTrigger={false}
+        className="min-w-36 w-auto"
+      >
         {LOCALES.map((l) => (
           <SelectItem key={l} value={l}>
+            <Bandiera locale={l} />
             {LOCALE_INFO[l].label}
           </SelectItem>
         ))}
       </SelectContent>
     </Select>
+  );
+}
+
+function Bandiera({ locale }: { locale: Locale }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- file statici in /public
+    <img
+      src={LOCALE_INFO[locale].bandiera}
+      alt=""
+      width={20}
+      height={20}
+      draggable={false}
+      className="size-5 shrink-0 rounded-full"
+    />
   );
 }
