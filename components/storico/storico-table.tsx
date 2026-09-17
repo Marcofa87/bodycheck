@@ -1,6 +1,11 @@
 "use client";
 
-import { EyeIcon, MoreHorizontalIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import {
+  EyeIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -54,7 +59,9 @@ export function StoricoTable({ righe }: StoricoTableProps) {
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead>{t("storico.colonnaData")}</TableHead>
-              <TableHead className="text-right">{t("campi.peso_kg.short")}</TableHead>
+              <TableHead className="text-right">
+                {t("campi.peso_kg.short")}
+              </TableHead>
               <TableHead className="hidden text-right md:table-cell">
                 {t("campi.massa_magra_kg.short")}
               </TableHead>
@@ -77,7 +84,9 @@ export function StoricoTable({ righe }: StoricoTableProps) {
                 onClick={() => setDettaglio(m)}
               >
                 <TableCell>
-                  <div className="font-medium">{formatter.data(m.data_misurazione)}</div>
+                  <div className="font-medium">
+                    {formatter.data(m.data_misurazione)}
+                  </div>
                   {m.note && (
                     <div className="max-w-40 truncate text-xs text-muted-foreground sm:max-w-60">
                       {m.note}
@@ -85,7 +94,8 @@ export function StoricoTable({ righe }: StoricoTableProps) {
                   )}
                 </TableCell>
                 <TableCell className="text-right font-medium tabular-nums">
-                  {formatter.numero(m.peso_kg)} <span className="text-xs text-muted-foreground">kg</span>
+                  {formatter.numero(m.peso_kg)}{" "}
+                  <span className="text-xs text-muted-foreground">kg</span>
                 </TableCell>
                 <TableCell className="hidden text-right tabular-nums md:table-cell">
                   {formatter.numero(m.massa_magra_kg)}
@@ -99,7 +109,13 @@ export function StoricoTable({ righe }: StoricoTableProps) {
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <DropdownMenu>
                     <DropdownMenuTrigger
-                      render={<Button variant="ghost" size="icon-sm" aria-label={t("comune.azioni")} />}
+                      render={
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={t("comune.azioni")}
+                        />
+                      }
                     >
                       <MoreHorizontalIcon />
                     </DropdownMenuTrigger>
@@ -111,7 +127,10 @@ export function StoricoTable({ righe }: StoricoTableProps) {
                         <PencilIcon /> {t("comune.modifica")}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem variant="destructive" onClick={() => elimina(m)}>
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => elimina(m)}
+                      >
                         <Trash2Icon /> {t("comune.elimina")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
