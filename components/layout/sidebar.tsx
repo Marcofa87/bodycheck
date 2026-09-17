@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 
 import { LogoutButton } from "./logout-button";
 import { SidebarNav } from "./nav-links";
-import { ThemeToggle } from "./theme-toggle";
 
 interface SidebarProps {
   email?: string | null;
