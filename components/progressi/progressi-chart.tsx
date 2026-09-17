@@ -1,6 +1,5 @@
 "use client";
 
-import { ArrowDownRightIcon, ArrowUpRightIcon, MinusIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import {
@@ -44,7 +43,7 @@ import {
 import { useFormatMisurazioni } from "@/lib/misurazioni/format";
 import { riepilogoSerie, serieMetrica } from "@/lib/misurazioni/stats";
 import type { Misurazione } from "@/lib/supabase/types";
-import { cn } from "@/lib/utils";
+import StatMini from "./componenti/StatMini";
 
 type Periodo = "7" | "30" | "90" | "365" | "tutto";
 const PERIODI: Periodo[] = ["7", "30", "90", "365", "tutto"];
@@ -459,60 +458,5 @@ function OpzioniMetriche({ escludi }: { escludi?: MetricaGrafico }) {
         </SelectGroup>
       )}
     </>
-  );
-}
-
-function StatMini({
-  label,
-  valore,
-  unita,
-  trend,
-  sottotitolo,
-}: {
-  label: string;
-  valore: string | null;
-  unita: string;
-  trend?: number;
-  sottotitolo?: string;
-}) {
-  return (
-    <Card className="gap-1 py-4">
-      <CardContent className="space-y-1">
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <div className="flex items-baseline gap-1">
-          {trend !== undefined && valore !== null && (
-            <span
-              className={cn(
-                "self-center",
-                trend > 0
-                  ? "text-negative"
-                  : trend < 0
-                    ? "text-positive"
-                    : "text-muted-foreground",
-              )}
-            >
-              {trend > 0 ? (
-                <ArrowUpRightIcon className="size-4" />
-              ) : trend < 0 ? (
-                <ArrowDownRightIcon className="size-4" />
-              ) : (
-                <MinusIcon className="size-4" />
-              )}
-            </span>
-          )}
-          <span className="text-xl font-semibold tabular-nums">
-            {valore ?? "—"}
-          </span>
-          {valore !== null && unita && (
-            <span className="text-xs text-muted-foreground">{unita}</span>
-          )}
-        </div>
-        {sottotitolo && (
-          <p className="truncate text-[11px] text-muted-foreground">
-            {sottotitolo}
-          </p>
-        )}
-      </CardContent>
-    </Card>
   );
 }
