@@ -42,13 +42,14 @@ export function Sidebar({ email }: SidebarProps) {
       <Separator />
 
       <div className="flex flex-col gap-2 p-3">
-        <p
-          className="truncate px-1 text-xs text-muted-foreground"
-          title={email ?? undefined}
-        >
-          {email ?? t("utente")}
-        </p>
         <div className="flex items-center justify-end gap-1">
+          {" "}
+          <p
+            className="truncate px-1 text-xs text-muted-foreground"
+            title={email ?? undefined}
+          >
+            {email ?? t("utente")}
+          </p>{" "}
           <LogoutButton size="icon" soloIcona />
         </div>
       </div>
