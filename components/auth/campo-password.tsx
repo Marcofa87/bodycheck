@@ -56,9 +56,9 @@ export function CampoPassword({
           tabIndex={-1}
         >
           {visibile ? (
-            <EyeOffIcon className="size-4" />
+            <EyeOffIcon className="size-4 cursor-pointer" />
           ) : (
-            <EyeIcon className="size-4" />
+            <EyeIcon className="size-4 cursor-pointer" />
           )}
         </button>
       </div>

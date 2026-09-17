@@ -45,7 +45,9 @@ export function LoginForm({ messaggioIniziale }: LoginFormProps) {
         modalita={modalita}
         email={email}
         onEmailChange={setEmail}
-        messaggioIniziale={modalita === "accedi" ? messaggioIniziale : undefined}
+        messaggioIniziale={
+          modalita === "accedi" ? messaggioIniziale : undefined
+        }
         onCambiaModalita={setModalita}
       />
     </Card>
@@ -109,11 +111,17 @@ function FormInterno({
             id="password"
             name="password"
             label={t("password")}
-            autoComplete={modalita === "accedi" ? "current-password" : "new-password"}
+            autoComplete={
+              modalita === "accedi" ? "current-password" : "new-password"
+            }
             disabled={pending}
             azione={
               modalita === "accedi" && (
-                <LinkModalita onClick={() => onCambiaModalita("recupera")} disabled={pending} className="text-xs">
+                <LinkModalita
+                  onClick={() => onCambiaModalita("recupera")}
+                  disabled={pending}
+                  className="text-xs"
+                >
                   {t("passwordDimenticata")}
                 </LinkModalita>
               )
@@ -135,7 +143,10 @@ function FormInterno({
 
         <p className="text-center text-sm text-muted-foreground">
           {t(`${modalita}.switchTesto`)}{" "}
-          <LinkModalita onClick={() => onCambiaModalita(SWITCH_DESTINAZIONE[modalita])} disabled={pending}>
+          <LinkModalita
+            onClick={() => onCambiaModalita(SWITCH_DESTINAZIONE[modalita])}
+            disabled={pending}
+          >
             {t(`${modalita}.switchAzione`)}
           </LinkModalita>
         </p>
@@ -152,13 +163,21 @@ interface LinkModalitaProps {
 }
 
 /** Link testuale (button) per passare da una modalità all'altra del form. */
-function LinkModalita({ onClick, disabled, className, children }: LinkModalitaProps) {
+function LinkModalita({
+  onClick,
+  disabled,
+  className,
+  children,
+}: LinkModalitaProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={cn("font-medium text-primary underline-offset-4 hover:underline", className)}
+      className={cn(
+        "font-medium text-primary underline-offset-4 hover:underline cursor-pointer",
+        className,
+      )}
     >
       {children}
     </button>
