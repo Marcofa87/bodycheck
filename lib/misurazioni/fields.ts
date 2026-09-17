@@ -60,7 +60,7 @@ export const CAMPI: CampoMetrica[] = [
 
   // Sezione 3 — Gambe
   { key: "fianchi_cm", unita: "cm", sezione: "gambe", min: 50, max: 200 },
-  { key: "vita_fianchi_cm", unita: "cm", sezione: "gambe", min: 0, max: 200 },
+  { key: "vita_fianchi_cm", unita: "cm", sezione: "gambe", min: 0.4, max: 2 },
   {
     key: "coscia_superiore_sinistra_cm",
     unita: "cm",

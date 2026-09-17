@@ -23,7 +23,10 @@ export function Sidebar({ email }: SidebarProps) {
         <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
           <ActivityIcon className="size-4" />
         </span>
-        <Link href="/dashboard" className="text-base font-semibold tracking-tight">
+        <Link
+          href="/dashboard"
+          className="text-base font-semibold tracking-tight"
+        >
           {t("app")}
         </Link>
       </div>
@@ -39,11 +42,13 @@ export function Sidebar({ email }: SidebarProps) {
       <Separator />
 
       <div className="flex flex-col gap-2 p-3">
-        <p className="truncate px-1 text-xs text-muted-foreground" title={email ?? undefined}>
+        <p
+          className="truncate px-1 text-xs text-muted-foreground"
+          title={email ?? undefined}
+        >
           {email ?? t("utente")}
         </p>
         <div className="flex items-center justify-end gap-1">
-          <ThemeToggle />
           <LogoutButton size="icon" soloIcona />
         </div>
       </div>

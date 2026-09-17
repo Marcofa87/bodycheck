@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { LanguageSelect } from "./language-select";
+import { ThemeToggle } from "./theme-toggle";
 
 interface PageHeaderProps {
   titolo: string;
@@ -13,11 +14,14 @@ export function PageHeader({ titolo, descrizione, azioni }: PageHeaderProps) {
     <div className="mb-6 flex items-start justify-between gap-3">
       <div className="min-w-0">
         <h1 className="text-2xl font-semibold tracking-tight">{titolo}</h1>
-        {descrizione && <p className="mt-1 text-sm text-muted-foreground">{descrizione}</p>}
+        {descrizione && (
+          <p className="mt-1 text-sm text-muted-foreground">{descrizione}</p>
+        )}
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {azioni}
         <LanguageSelect esteso />
+        <ThemeToggle />
       </div>
     </div>
   );
