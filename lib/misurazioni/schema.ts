@@ -25,10 +25,17 @@ const arrotonda = (n: number) => Math.round(n * 100) / 100;
  * Usato sia dal form (client) sia dalla Server Action, così i messaggi coincidono.
  */
 export function creaMisurazioneSchema(t: Traduttore) {
-  function validaNumero(campo: CampoMetrica, value: string, ctx: z.RefinementCtx) {
+  function validaNumero(
+    campo: CampoMetrica,
+    value: string,
+    ctx: z.RefinementCtx,
+  ) {
     const n = parseNumero(value);
     if (Number.isNaN(n)) {
-      ctx.addIssue({ code: "custom", message: t("validazione.numeroNonValido") });
+      ctx.addIssue({
+        code: "custom",
+        message: t("validazione.numeroNonValido"),
+      });
       return;
     }
     if (n <= 0) {
@@ -38,7 +45,11 @@ export function creaMisurazioneSchema(t: Traduttore) {
     if (n < campo.min || n > campo.max) {
       ctx.addIssue({
         code: "custom",
-        message: t("validazione.range", { min: campo.min, max: campo.max, unita: campo.unita }),
+        message: t("validazione.range", {
+          min: campo.min,
+          max: campo.max,
+          unita: campo.unita,
+        }),
       });
     }
   }
@@ -52,7 +63,9 @@ export function creaMisurazioneSchema(t: Traduttore) {
         if (value === "") return;
         validaNumero(campo, value, ctx);
       })
-      .transform((value) => (value === "" ? null : arrotonda(parseNumero(value))));
+      .transform((value) =>
+        value === "" ? null : arrotonda(parseNumero(value)),
+      );
   }
 
   /** Campo numerico obbligatorio. */
@@ -64,7 +77,9 @@ export function creaMisurazioneSchema(t: Traduttore) {
         if (value === "") {
           ctx.addIssue({
             code: "custom",
-            message: t("validazione.obbligatorio", { campo: t(`campi.${campo.key}.label`) }),
+            message: t("validazione.obbligatorio", {
+              campo: t(`campi.${campo.key}.label`),
+            }),
           });
           return;
         }
@@ -83,7 +98,9 @@ export function creaMisurazioneSchema(t: Traduttore) {
     peso_kg: campoObbligatorio(getCampo("peso_kg")),
     massa_grassa_kg: campoObbligatorio(getCampo("massa_grassa_kg")),
     massa_magra_kg: campoObbligatorio(getCampo("massa_magra_kg")),
-    grasso_corporeo_percentuale: campoOpzionale(getCampo("grasso_corporeo_percentuale")),
+    grasso_corporeo_percentuale: campoOpzionale(
+      getCampo("grasso_corporeo_percentuale"),
+    ),
     collo_cm: campoOpzionale(getCampo("collo_cm")),
     torace_superiore_cm: campoOpzionale(getCampo("torace_superiore_cm")),
     petto_cm: campoOpzionale(getCampo("petto_cm")),
@@ -94,10 +111,18 @@ export function creaMisurazioneSchema(t: Traduttore) {
 
     fianchi_cm: campoOpzionale(getCampo("fianchi_cm")),
     vita_fianchi_cm: campoOpzionale(getCampo("vita_fianchi_cm")),
-    coscia_superiore_sinistra_cm: campoOpzionale(getCampo("coscia_superiore_sinistra_cm")),
-    coscia_superiore_destra_cm: campoOpzionale(getCampo("coscia_superiore_destra_cm")),
-    coscia_inferiore_sinistra_cm: campoOpzionale(getCampo("coscia_inferiore_sinistra_cm")),
-    coscia_inferiore_destra_cm: campoOpzionale(getCampo("coscia_inferiore_destra_cm")),
+    coscia_superiore_sinistra_cm: campoOpzionale(
+      getCampo("coscia_superiore_sinistra_cm"),
+    ),
+    coscia_superiore_destra_cm: campoOpzionale(
+      getCampo("coscia_superiore_destra_cm"),
+    ),
+    coscia_inferiore_sinistra_cm: campoOpzionale(
+      getCampo("coscia_inferiore_sinistra_cm"),
+    ),
+    coscia_inferiore_destra_cm: campoOpzionale(
+      getCampo("coscia_inferiore_destra_cm"),
+    ),
     polpaccio_sinistro_cm: campoOpzionale(getCampo("polpaccio_sinistro_cm")),
     polpaccio_destro_cm: campoOpzionale(getCampo("polpaccio_destro_cm")),
 
@@ -124,7 +149,10 @@ export function formInputVuoto(): MisurazioneFormInput {
 }
 
 /** Converte una riga del DB nei valori (stringhe) del form, per la modifica, con il separatore decimale della lingua. */
-export function misurazioneToFormInput(m: Misurazione, locale: Locale): MisurazioneFormInput {
+export function misurazioneToFormInput(
+  m: Misurazione,
+  locale: Locale,
+): MisurazioneFormInput {
   const formatter = creaFormatter(locale);
   const base = Object.fromEntries(
     CAMPI.map((c) => {

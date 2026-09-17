@@ -14,7 +14,13 @@ import {
   YAxis,
 } from "recharts";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -66,11 +72,19 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
   const giorni = periodo === "tutto" ? null : Number(periodo);
 
   const etichettaPeriodo = (p: Periodo) =>
-    p === "tutto" ? t("progressi.tutto") : p === "365" ? t("progressi.unAnno") : t("comune.giorni", { giorni: Number(p) });
+    p === "tutto"
+      ? t("progressi.tutto")
+      : p === "365"
+        ? t("progressi.unAnno")
+        : t("comune.giorni", { giorni: Number(p) });
 
   const infoMetrica = (m: MetricaGrafico): InfoMetrica => {
     if (m === METRICA_DERIVATA_VITA_FIANCHI) {
-      return { label: t("progressi.rapportoVitaFianchi"), unita: "", decimali: 2 };
+      return {
+        label: t("progressi.rapportoVitaFianchi"),
+        unita: "",
+        decimali: 2,
+      };
     }
     const campo = getCampo(m);
     return { label: t(`campi.${m}.label`), unita: campo.unita, decimali: 1 };
@@ -79,8 +93,12 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
   // Mappa valore → etichetta usata da <SelectValue> per mostrare il testo selezionato.
   const itemsMetriche = useMemo<Record<string, string>>(
     () => ({
-      ...Object.fromEntries(CAMPI.map((c) => [c.key, t(`campi.${c.key}.label`)])),
-      [METRICA_DERIVATA_VITA_FIANCHI]: t("progressi.rapportoVitaFianchiCalcolato"),
+      ...Object.fromEntries(
+        CAMPI.map((c) => [c.key, t(`campi.${c.key}.label`)]),
+      ),
+      [METRICA_DERIVATA_VITA_FIANCHI]: t(
+        "progressi.rapportoVitaFianchiCalcolato",
+      ),
     }),
     [t],
   );
@@ -94,24 +112,31 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
     [misurazioni, metrica, giorni],
   );
   const serieConfronto = useMemo(
-    () => (confronto === NESSUNA ? [] : serieMetrica(misurazioni, confronto, giorni)),
+    () =>
+      confronto === NESSUNA ? [] : serieMetrica(misurazioni, confronto, giorni),
     [misurazioni, confronto, giorni],
   );
 
-  const riepilogo = useMemo(() => riepilogoSerie(seriePrincipale), [seriePrincipale]);
+  const riepilogo = useMemo(
+    () => riepilogoSerie(seriePrincipale),
+    [seriePrincipale],
+  );
   const info = infoMetrica(metrica);
   const infoConfronto = confronto === NESSUNA ? null : infoMetrica(confronto);
 
   // Unione delle due serie sulla stessa asse temporale.
   const dati = useMemo(() => {
     const perData = new Map<string, { data: string; a?: number; b?: number }>();
-    for (const p of seriePrincipale) perData.set(p.data, { data: p.data, a: p.valore });
+    for (const p of seriePrincipale)
+      perData.set(p.data, { data: p.data, a: p.valore });
     for (const p of serieConfronto) {
       const riga = perData.get(p.data) ?? { data: p.data };
       riga.b = p.valore;
       perData.set(p.data, riga);
     }
-    return Array.from(perData.values()).sort((x, y) => x.data.localeCompare(y.data));
+    return Array.from(perData.values()).sort((x, y) =>
+      x.data.localeCompare(y.data),
+    );
   }, [seriePrincipale, serieConfronto]);
 
   return (
@@ -146,7 +171,9 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={NESSUNA}>{t("progressi.nessunConfronto")}</SelectItem>
+                <SelectItem value={NESSUNA}>
+                  {t("progressi.nessunConfronto")}
+                </SelectItem>
                 <SelectSeparator />
                 <OpzioniMetriche escludi={metrica} />
               </SelectContent>
@@ -155,7 +182,10 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
 
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label>{t("progressi.periodo")}</Label>
-            <Tabs value={periodo} onValueChange={(v) => setPeriodo(v as Periodo)}>
+            <Tabs
+              value={periodo}
+              onValueChange={(v) => setPeriodo(v as Periodo)}
+            >
               <TabsList className="w-full lg:w-auto">
                 {PERIODI.map((p) => (
                   <TabsTrigger key={p} value={p}>
@@ -172,7 +202,11 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatMini
           label={t("progressi.variazioneNelPeriodo")}
-          valore={riepilogo ? formatter.numero(riepilogo.variazione, info.decimali) : null}
+          valore={
+            riepilogo
+              ? formatter.numero(riepilogo.variazione, info.decimali)
+              : null
+          }
           unita={info.unita}
           trend={riepilogo ? Math.sign(riepilogo.variazione) : 0}
           sottotitolo={
@@ -183,18 +217,30 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
         />
         <StatMini
           label={t("progressi.media")}
-          valore={riepilogo ? formatter.numero(riepilogo.media, info.decimali) : null}
+          valore={
+            riepilogo ? formatter.numero(riepilogo.media, info.decimali) : null
+          }
           unita={info.unita}
-          sottotitolo={riepilogo ? t("comune.misurazioni", { count: riepilogo.conteggio }) : undefined}
+          sottotitolo={
+            riepilogo
+              ? t("comune.misurazioni", { count: riepilogo.conteggio })
+              : undefined
+          }
         />
         <StatMini
           label={t("progressi.minimo")}
-          valore={riepilogo ? formatter.numero(riepilogo.minimo, info.decimali) : null}
+          valore={
+            riepilogo ? formatter.numero(riepilogo.minimo, info.decimali) : null
+          }
           unita={info.unita}
         />
         <StatMini
           label={t("progressi.massimo")}
-          valore={riepilogo ? formatter.numero(riepilogo.massimo, info.decimali) : null}
+          valore={
+            riepilogo
+              ? formatter.numero(riepilogo.massimo, info.decimali)
+              : null
+          }
           unita={info.unita}
         />
       </div>
@@ -207,10 +253,14 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
             {seriePrincipale.length === 0
               ? t("progressi.nessunDatoPeriodo")
               : infoConfronto
-                ? t("progressi.confrontoCon", { metrica: infoConfronto.label.toLowerCase() })
+                ? t("progressi.confrontoCon", {
+                    metrica: infoConfronto.label.toLowerCase(),
+                  })
                 : periodo === "tutto"
                   ? t("progressi.andamentoTutto")
-                  : t("progressi.andamentoPeriodo", { periodo: etichettaPeriodo(periodo) })}
+                  : t("progressi.andamentoPeriodo", {
+                      periodo: etichettaPeriodo(periodo),
+                    })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -221,14 +271,32 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dati} margin={{ top: 8, right: infoConfronto ? 8 : 16, bottom: 0, left: -8 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+                <LineChart
+                  data={dati}
+                  margin={{
+                    top: 8,
+                    right: infoConfronto ? 8 : 16,
+                    bottom: 0,
+                    left: -8,
+                  }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="var(--color-border)"
+                    vertical={false}
+                  />
                   <XAxis
                     dataKey="data"
                     tickFormatter={(v: string) =>
-                      formatter.data(v, giorni !== null && giorni <= 90 ? "d MMM" : "MMM yy")
+                      formatter.data(
+                        v,
+                        giorni !== null && giorni <= 90 ? "d MMM" : "MMM yy",
+                      )
                     }
-                    tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                    tick={{
+                      fontSize: 11,
+                      fill: "var(--color-muted-foreground)",
+                    }}
                     tickLine={false}
                     axisLine={false}
                     minTickGap={24}
@@ -236,10 +304,15 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                   <YAxis
                     yAxisId="sinistra"
                     domain={["auto", "auto"]}
-                    tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                    tick={{
+                      fontSize: 11,
+                      fill: "var(--color-muted-foreground)",
+                    }}
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(v: number) => formatter.numero(v, info.decimali)}
+                    tickFormatter={(v: number) =>
+                      formatter.numero(v, info.decimali)
+                    }
                     width={48}
                   />
                   {infoConfronto && (
@@ -247,10 +320,15 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                       yAxisId="destra"
                       orientation="right"
                       domain={["auto", "auto"]}
-                      tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "var(--color-muted-foreground)",
+                      }}
                       tickLine={false}
                       axisLine={false}
-                      tickFormatter={(v: number) => formatter.numero(v, infoConfronto.decimali)}
+                      tickFormatter={(v: number) =>
+                        formatter.numero(v, infoConfronto.decimali)
+                      }
                       width={48}
                     />
                   )}
@@ -258,7 +336,11 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                     cursor={{ stroke: "var(--color-border)" }}
                     content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
-                      const riga = payload[0].payload as { data: string; a?: number; b?: number };
+                      const riga = payload[0].payload as {
+                        data: string;
+                        a?: number;
+                        b?: number;
+                      };
                       return (
                         <div className="rounded-lg border bg-popover px-3 py-2 text-xs shadow-md">
                           <p className="mb-1 text-muted-foreground">
@@ -266,14 +348,23 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                           </p>
                           {riga.a !== undefined && (
                             <p className="flex items-center gap-1.5 font-medium tabular-nums">
-                              <span className="size-2 rounded-full" style={{ background: "var(--color-chart-1)" }} />
-                              {info.label}: {formatter.numero(riga.a, info.decimali)} {info.unita}
+                              <span
+                                className="size-2 rounded-full"
+                                style={{ background: "var(--color-chart-1)" }}
+                              />
+                              {info.label}:{" "}
+                              {formatter.numero(riga.a, info.decimali)}{" "}
+                              {info.unita}
                             </p>
                           )}
                           {infoConfronto && riga.b !== undefined && (
                             <p className="flex items-center gap-1.5 font-medium tabular-nums">
-                              <span className="size-2 rounded-full" style={{ background: "var(--color-chart-2)" }} />
-                              {infoConfronto.label}: {formatter.numero(riga.b, infoConfronto.decimali)}{" "}
+                              <span
+                                className="size-2 rounded-full"
+                                style={{ background: "var(--color-chart-2)" }}
+                              />
+                              {infoConfronto.label}:{" "}
+                              {formatter.numero(riga.b, infoConfronto.decimali)}{" "}
                               {infoConfronto.unita}
                             </p>
                           )}
@@ -287,7 +378,9 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                       height={28}
                       iconType="circle"
                       formatter={(value: string) => (
-                        <span className="text-xs text-muted-foreground">{value}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {value}
+                        </span>
                       )}
                     />
                   )}
@@ -298,7 +391,11 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                     name={info.label}
                     stroke="var(--color-chart-1)"
                     strokeWidth={2}
-                    dot={dati.length <= 20 ? { r: 3, strokeWidth: 0, fill: "var(--color-chart-1)" } : false}
+                    dot={
+                      dati.length <= 20
+                        ? { r: 3, strokeWidth: 0, fill: "var(--color-chart-1)" }
+                        : false
+                    }
                     activeDot={{ r: 5 }}
                     connectNulls
                     isAnimationActive={false}
@@ -312,7 +409,15 @@ export function ProgressiChart({ misurazioni }: ProgressiChartProps) {
                       stroke="var(--color-chart-2)"
                       strokeWidth={2}
                       strokeDasharray="4 3"
-                      dot={dati.length <= 20 ? { r: 3, strokeWidth: 0, fill: "var(--color-chart-2)" } : false}
+                      dot={
+                        dati.length <= 20
+                          ? {
+                              r: 3,
+                              strokeWidth: 0,
+                              fill: "var(--color-chart-2)",
+                            }
+                          : false
+                      }
                       activeDot={{ r: 5 }}
                       connectNulls
                       isAnimationActive={false}
@@ -348,7 +453,9 @@ function OpzioniMetriche({ escludi }: { escludi?: MetricaGrafico }) {
       {escludi !== METRICA_DERIVATA_VITA_FIANCHI && (
         <SelectGroup>
           <SelectLabel>{t("progressi.calcolate")}</SelectLabel>
-          <SelectItem value={METRICA_DERIVATA_VITA_FIANCHI}>{t("progressi.rapportoVitaFianchi")}</SelectItem>
+          <SelectItem value={METRICA_DERIVATA_VITA_FIANCHI}>
+            {t("progressi.rapportoVitaFianchi")}
+          </SelectItem>
         </SelectGroup>
       )}
     </>
@@ -377,7 +484,11 @@ function StatMini({
             <span
               className={cn(
                 "self-center",
-                trend > 0 ? "text-negative" : trend < 0 ? "text-positive" : "text-muted-foreground",
+                trend > 0
+                  ? "text-negative"
+                  : trend < 0
+                    ? "text-positive"
+                    : "text-muted-foreground",
               )}
             >
               {trend > 0 ? (
@@ -389,10 +500,18 @@ function StatMini({
               )}
             </span>
           )}
-          <span className="text-xl font-semibold tabular-nums">{valore ?? "—"}</span>
-          {valore !== null && unita && <span className="text-xs text-muted-foreground">{unita}</span>}
+          <span className="text-xl font-semibold tabular-nums">
+            {valore ?? "—"}
+          </span>
+          {valore !== null && unita && (
+            <span className="text-xs text-muted-foreground">{unita}</span>
+          )}
         </div>
-        {sottotitolo && <p className="truncate text-[11px] text-muted-foreground">{sottotitolo}</p>}
+        {sottotitolo && (
+          <p className="truncate text-[11px] text-muted-foreground">
+            {sottotitolo}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

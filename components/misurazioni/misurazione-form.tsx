@@ -56,7 +56,11 @@ const CAMPI_OBBLIGATORI = [
 ];
 
 /** Valore di esempio per il placeholder, in base all'unità. */
-const ESEMPI: Record<CampoMetrica["unita"], number> = { "%": 18.5, kg: 72.5, cm: 80 };
+const ESEMPI: Record<CampoMetrica["unita"], number> = {
+  "%": 18.5,
+  kg: 72.5,
+  cm: 80,
+};
 
 export function MisurazioneForm({
   misurazione,
@@ -150,7 +154,12 @@ export function MisurazioneForm({
         {/* Indicatore di avanzamento */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>{t("form.sezioneDi", { n: indiceSezione + 1, totale: SEZIONI.length })}</span>
+            <span>
+              {t("form.sezioneDi", {
+                n: indiceSezione + 1,
+                totale: SEZIONI.length,
+              })}
+            </span>
             <span>{t(`sezioni.${sezione}.label`)}</span>
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
@@ -186,7 +195,9 @@ export function MisurazioneForm({
                       i + 1
                     )}
                   </span>
-                  <span className="hidden sm:inline">{t(`sezioni.${id}.label`)}</span>
+                  <span className="hidden sm:inline">
+                    {t(`sezioni.${id}.label`)}
+                  </span>
                   <span className="sm:hidden">{t(`sezioni.${id}.breve`)}</span>
                 </TabsTrigger>
               );
@@ -306,7 +317,9 @@ function CampoNumerico({
         type="text"
         inputMode="decimal"
         autoComplete="off"
-        placeholder={t("form.placeholder", { esempio: formatter.perInput(ESEMPI[campo.unita]) })}
+        placeholder={t("form.placeholder", {
+          esempio: formatter.perInput(ESEMPI[campo.unita]),
+        })}
         aria-invalid={Boolean(errore)}
         disabled={disabled}
         {...registrazione}

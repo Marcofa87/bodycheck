@@ -51,7 +51,9 @@ export function MisurazioneDettaglioDialog({
             {t("dettaglio.titolo")}
           </DialogTitle>
           <DialogDescription>
-            {misurazione ? formatter.dataLunga(misurazione.data_misurazione) : ""}
+            {misurazione
+              ? formatter.dataLunga(misurazione.data_misurazione)
+              : ""}
           </DialogDescription>
         </DialogHeader>
 
@@ -59,23 +61,33 @@ export function MisurazioneDettaglioDialog({
           <div className="space-y-5">
             {SEZIONI.map((sezione) => {
               const campi = CAMPI_PER_SEZIONE[sezione];
-              const compilati = campi.filter((c) => misurazione[c.key] !== null);
+              const compilati = campi.filter(
+                (c) => misurazione[c.key] !== null,
+              );
               return (
                 <section key={sezione}>
                   <h3 className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                     {t(`sezioni.${sezione}.label`)}
                   </h3>
                   {compilati.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">{t("dettaglio.nessunDato")}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {t("dettaglio.nessunDato")}
+                    </p>
                   ) : (
                     <dl className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3">
                       {compilati.map((campo) => (
-                        <div key={campo.key} className="rounded-lg bg-muted/50 px-2.5 py-2">
+                        <div
+                          key={campo.key}
+                          className="rounded-lg bg-muted/50 px-2.5 py-2"
+                        >
                           <dt className="text-xs text-muted-foreground">
                             {t(`campi.${campo.key}.label`)}
                           </dt>
                           <dd className="font-medium tabular-nums">
-                            {formatter.valore(misurazione[campo.key], campo.unita)}
+                            {formatter.valore(
+                              misurazione[campo.key],
+                              campo.unita,
+                            )}
                           </dd>
                         </div>
                       ))}
@@ -84,7 +96,9 @@ export function MisurazioneDettaglioDialog({
                           <dt className="text-xs text-muted-foreground">
                             {t("dettaglio.rapportoVitaFianchi")}
                           </dt>
-                          <dd className="font-medium tabular-nums">{formatter.numero(rapporto, 2)}</dd>
+                          <dd className="font-medium tabular-nums">
+                            {formatter.numero(rapporto, 2)}
+                          </dd>
                         </div>
                       )}
                     </dl>
@@ -98,7 +112,9 @@ export function MisurazioneDettaglioDialog({
                 <h3 className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                   {t("comune.note")}
                 </h3>
-                <p className="text-sm whitespace-pre-wrap">{misurazione.note}</p>
+                <p className="text-sm whitespace-pre-wrap">
+                  {misurazione.note}
+                </p>
               </section>
             )}
           </div>

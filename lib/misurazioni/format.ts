@@ -23,7 +23,9 @@ export interface FormatterMisurazioni {
 
 function separatoreDecimale(intl: string): string {
   return (
-    new Intl.NumberFormat(intl).formatToParts(1.1).find((p) => p.type === "decimal")?.value ?? "."
+    new Intl.NumberFormat(intl)
+      .formatToParts(1.1)
+      .find((p) => p.type === "decimal")?.value ?? "."
   );
 }
 
@@ -46,7 +48,8 @@ export function creaFormatter(locale: Locale): FormatterMisurazioni {
   const separatore = separatoreDecimale(info.intl);
 
   const numero: FormatterMisurazioni["numero"] = (value, decimali = 1) => {
-    if (value === null || value === undefined || Number.isNaN(value)) return "—";
+    if (value === null || value === undefined || Number.isNaN(value))
+      return "—";
     return (decimali === 2 ? dueDecimali : unDecimale).format(value);
   };
 
@@ -66,7 +69,9 @@ export function creaFormatter(locale: Locale): FormatterMisurazioni {
       return format(parseISO(iso), pattern, { locale: info.dateFns });
     },
     dataLunga(iso) {
-      return format(parseISO(iso), "EEEE d MMMM yyyy", { locale: info.dateFns });
+      return format(parseISO(iso), "EEEE d MMMM yyyy", {
+        locale: info.dateFns,
+      });
     },
     perInput(value) {
       return String(value).replace(".", separatore);

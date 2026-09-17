@@ -41,7 +41,8 @@ export async function GET() {
     const locale = await getLocale();
     const { separatoreCsv } = LOCALE_INFO[locale];
     const formatter = creaFormatter(locale);
-    const numero = (v: number | null) => (v === null ? null : formatter.perInput(v));
+    const numero = (v: number | null) =>
+      v === null ? null : formatter.perInput(v);
 
     const intestazione = [
       t("csv.data"),
@@ -54,7 +55,9 @@ export async function GET() {
       cella(m.note, separatoreCsv),
     ]);
 
-    const csv = [intestazione, ...righe].map((r) => r.join(separatoreCsv)).join("\r\n");
+    const csv = [intestazione, ...righe]
+      .map((r) => r.join(separatoreCsv))
+      .join("\r\n");
     const nomeFile = `bodytrack-misurazioni-${format(new Date(), "yyyy-MM-dd")}.csv`;
 
     // BOM iniziale così Excel riconosce l'UTF-8
